@@ -20,9 +20,9 @@ from routes.User import *
 
 
 # frontend index page
-@app.route('/')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# def main():
+#     return render_template('index.html')
 
 
 # give all to vue router

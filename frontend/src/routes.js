@@ -1,32 +1,26 @@
-import Example from "./components/Example.vue";
-import Layout from "./components/Layout.vue";
-import Index  from "./components/Index.vue";
-
-import before from "./utils/before.js";
+import indexView from "./views/indexView";
+import lecturesView from "./views/lecturesView";
+import blogView from "./views/blogView";
 
 const routes = [
     {
         path: "/",
-        component: Index,
+        component: indexView,
         name: "indexPage",
         meta: {}
     },
     {
-        path: "/authorized/",
-        component: Layout,
-        name: "examplePage",
-        beforeEnter: before,
-        meta: {},
-        children: [
-            {
-                path: "example",
-                component: Example,
-                name: "examplePage",
-                meta: {}
-            }
-            // authorized paths go here
-        ]
-    }
+        path: "/lectures",
+        component: lecturesView,
+        name: "lecturesPage",
+        meta: {}
+    },
+    {
+        path: "/blog",
+        component: blogView,
+        name: "blogPage",
+        meta: {}
+    },
 ];
 
 export default routes;
