@@ -21,7 +21,7 @@ from routes.User import *
 
 # frontend index page
 # @app.route('/')
-# def main():
+# def index():
 #     return render_template('index.html')
 
 
