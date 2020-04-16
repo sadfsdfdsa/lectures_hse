@@ -26,7 +26,7 @@
             </b-row>
             <b-row class="text-center mt-5">
                 <b-col class="mt-5">
-                    <b-button to="/lectures" size="lg" class="btn btn-white btn-animation-1 btn-xl">
+                    <b-button to="/lectures" size="lg" class="btn-white btn-animation-1 btn-xl btn-hse">
                         Start studying now.
                     </b-button>
                 </b-col>

@@ -4,7 +4,7 @@
         <b-container class="body_for_footer">
             <b-row>
                 <b-col class="text-center">
-                    <b-button v-b-modal.modal-1 class="btn btn-white btn-animation-1 btn-xl" size="lg">Add lecture.
+                    <b-button v-b-modal.modal-1 class="btn-hse btn-white btn-animation-1 btn-xl" size="lg">Add lecture.
                     </b-button>
                     <b-modal id="modal-1" hide-footer>
                         <template v-slot:modal-title>
@@ -56,7 +56,7 @@
                                     <b-form-checkbox :value="user">Set me as author (for teachers recommended)
                                     </b-form-checkbox>
                                 </b-form-checkbox-group>
-                                <b-button size="md" class="mt-3 btn btn-white btn-animation-1 btn-xl"
+                                <b-button size="md" class="mt-3 btn-white btn-animation-1 btn-xl btn-hse"
                                           @click="add_lecture">
                                     Add lecture.
                                 </b-button>

@@ -9,7 +9,7 @@
             </b-row>
             <b-row class="mt-3 text-center">
                 <b-col>
-                    <b-button class="btn btn-white btn-animation-1 btn-xl" size="md">Contact me.</b-button>
+                    <b-button class="btn-white btn-animation-1 btn-xl btn-hse" size="md">Contact me.</b-button>
                 </b-col>
             </b-row>
         </b-container>

@@ -19,7 +19,7 @@ db.create_tables()
 from routes.User import *
 
 
-# frontend index page
+# # frontend index page
 # @app.route('/')
 # def index():
 #     return render_template('index.html')

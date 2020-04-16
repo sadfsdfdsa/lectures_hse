@@ -1,6 +1,5 @@
 .hse_font_color {
     color: cornflowerblue;
-
 }
 
 .hse_nav_background {
@@ -21,9 +20,9 @@
     text-decoration: none;
 }
 
-a {
-    color: white;
-}
+/*a {*/
+/*color: white;*/
+/*}*/
 
 .hse_nav_header_main {
     font-family: 'Helvetica Neue';
@@ -36,14 +35,26 @@ a {
     border-radius: 50px;
 }
 
+.btn-complete {
+    background: #005cbf;
+    color: #000;
+    color: white;
+    border-radius: 50px;
+}
+
 .btn:hover {
     box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
+
+}
+
+.btn-hse:hover {
     /*transform: translateY(-3px);*/
     background-color: cornflowerblue;
     color: white;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
 }
 
-.btn:active {
+.btn-hse:active {
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
     transform: translateY(-1px);
 }
@@ -89,6 +100,7 @@ a {
 
 .body_for_footer {
     padding-bottom: 100px;
+    /*box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);*/
 }
 
 .a_white :hover {
