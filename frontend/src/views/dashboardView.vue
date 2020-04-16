@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Navigation sub_header="Blog." link_path="/" link_name="Home."></Navigation>
+        <Navigation sub_header="Dashboard." link_path="/" link_name="Home."></Navigation>
         <b-container class="body_for_footer">
             <b-row align-v="center">
                 <b-col>

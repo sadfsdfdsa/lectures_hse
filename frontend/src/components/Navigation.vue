@@ -5,7 +5,6 @@
                 <router-link to="/"><h1><span class="align-middle" style="color: white">On|{{sub_header}}</span></h1>
                 </router-link>
             </b-col>
-            <!--            <b-col class="text-center mt-3"><h3>{{sub_header}}</h3></b-col>-->
             <b-col class="text-right mr-5">
                 <router-link :to="link_path" class="hse_a"><h4>->{{link_name}}</h4></router-link>
             </b-col>
