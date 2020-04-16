@@ -49,18 +49,17 @@
         }),
         methods: {
             onClickButton(event) {
-                this.$emit('delete_component')
+                this.$emit('delete_component', this.tmp)
             },
             change_item() {
                 this.$emit('change_item', this.variant_self, this.text_self, this.tmp);
                 this.tmp.body = this.text_self;
                 this.tmp.variant = this.variant_self;
             },
-            change_variant(variant){
+            change_variant(variant) {
                 this.variant_self = variant;
                 this.change_item();
             }
-
         },
         created() {
             this.text_self = this.item.body;

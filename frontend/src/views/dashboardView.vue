@@ -29,7 +29,7 @@
                         </b-card>
                         <div v-for="item in card">
                             <card-component :item="item"
-                                            @delete_component="delete_item(item)"
+                                            @delete_component="delete_item"
                                             @change_item="change_variant"
                             ></card-component>
                         </div>
