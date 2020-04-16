@@ -11,25 +11,13 @@
                                 align="center"
                                 footer-tag="footer">
                             <b-card-text>
-                                <b-form-textarea v-model="input.body" placeholder="Enter body text"
-                                                 size="sm"></b-form-textarea>
+                                <b-textarea v-model="input.body" placeholder="Enter body text"
+                                            style="border: none; box-shadow: none; resize: none;"
+                                            size="sm"></b-textarea>
                             </b-card-text>
                             <template v-slot:header>
-                                <b-row style="max-height: 12px;" aligh-h="between" class="justify-content-between">
-                                    <b-col sm="7">
-                                        <b-button variant="primary" pill
-                                                  @click="input.variant='primary'">P
-                                        </b-button>
-                                        <b-button variant="danger" pill @click="input.variant='danger'"> D
-                                        </b-button>
-                                        <b-button variant="success" pill
-                                                  @click="input.variant='success'">S
-                                        </b-button>
-                                        <b-button variant="warning" pill
-                                                  @click="input.variant='warning'">W
-                                        </b-button>
-                                    </b-col>
-                                    <b-col sm="2">
+                                <b-row style="max-height: 10px;" aligh-h="end" class="text-right">
+                                    <b-col sm="12">
                                         <div>
                                             <b-button variant="secondary" pill
                                                       @click="create">>
@@ -40,9 +28,9 @@
                             </template>
                         </b-card>
                         <div v-for="item in card">
-                            <card-component :header_text="item.header" :variant="item.variant"
-                                            :footer_text="item.footer"
-                                            :body_text="item.body" @delete_component="delete_item(item)"
+                            <card-component :item="item"
+                                            @delete_component="delete_item(item)"
+                                            @change_item="change_variant"
                             ></card-component>
                         </div>
                     </b-card-group>
@@ -86,6 +74,14 @@
             },
             delete_item(item) {
                 this.$delete(this.card, this.card.indexOf(item));
+                this.save_in_browser()
+            },
+            change_variant(variant, text, item) {
+                let index = this.card.indexOf(item);
+
+                this.card[index].body = text;
+                this.card[index].variant = variant;
+
                 this.save_in_browser()
             },
             save_in_browser() {
