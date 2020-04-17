@@ -11,6 +11,9 @@
                 <router-link to="/lectures" class="hse_font_color"><h5>Lectures</h5></router-link>
             </b-col>
             <b-col>
+                <router-link to="/dashboard" class="hse_font_color"><h5>Dashboard</h5></router-link>
+            </b-col>
+            <b-col>
                 <router-link to="/blog" class="hse_font_color"><h5>Blog</h5></router-link>
             </b-col>
         </b-row>

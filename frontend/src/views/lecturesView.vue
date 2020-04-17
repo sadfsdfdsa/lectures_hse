@@ -19,23 +19,24 @@
                                         required
                                         placeholder="Enter lecture title"
                                 ></b-form-input>
-                                <b-form-select v-model="lecture_model.lang" :options="select_options.langs" size="sm"
-                                               class="mt-3"></b-form-select>
-                                <b-form-select v-model="lecture_model.theme" :options="select_options.themes" size="sm"
-                                               class="mt-3"></b-form-select>
-                                <b-form-select v-model="lecture_model.type" :options="select_options.types" size="sm"
-                                               class="mt-3"></b-form-select>
-                                <b-form-select v-model="lecture_model.country" :options="select_options.countries"
-                                               size="sm"
-                                               class="mt-3"></b-form-select>
-                                <b-form-select v-model="lecture_model.course" :options="select_options.courses"
-                                               size="sm"
-                                               class="mt-3"></b-form-select>
-                                <b-form-select v-model="lecture_model.university" :options="select_options.universities"
-                                               size="sm"
-                                               class="mt-3 mb-3"></b-form-select>
+                                <!--<b-form-select v-model="lecture_model.lang" :options="select_options.langs" size="sm"-->
+                                <!--class="mt-3"></b-form-select>-->
+                                <!--<b-form-select v-model="lecture_model.theme" :options="select_options.themes" size="sm"-->
+                                <!--class="mt-3"></b-form-select>-->
+                                <!--<b-form-select v-model="lecture_model.type" :options="select_options.types" size="sm"-->
+                                <!--class="mt-3"></b-form-select>-->
+                                <!--<b-form-select v-model="lecture_model.country" :options="select_options.countries"-->
+                                <!--size="sm"-->
+                                <!--class="mt-3"></b-form-select>-->
+                                <!--<b-form-select v-model="lecture_model.course" :options="select_options.courses"-->
+                                <!--size="sm"-->
+                                <!--class="mt-3"></b-form-select>-->
+                                <!--<b-form-select v-model="lecture_model.university" :options="select_options.universities"-->
+                                <!--size="sm"-->
+                                <!--class="mt-3"></b-form-select>-->
 
                                 <b-form-input
+                                        class="mt-3"
                                         id="input-2"
                                         v-model="lecture_model.link"
                                         type="text"
@@ -43,19 +44,19 @@
                                         placeholder="Link for materials"
                                 ></b-form-input>
 
-                                <b-form-file
-                                        class=" mt-3"
-                                        v-model="lecture_model.file"
-                                        :state="Boolean(file)"
-                                        placeholder="Choose a file or drop it here..."
-                                        drop-placeholder="Drop file here..."
-                                ></b-form-file>
+                                <!--<b-form-file-->
+                                <!--class=" mt-3"-->
+                                <!--v-model="lecture_model.file"-->
+                                <!--:state="Boolean(file)"-->
+                                <!--placeholder="Choose a file or drop it here..."-->
+                                <!--drop-placeholder="Drop file here..."-->
+                                <!--&gt;</b-form-file>-->
 
 
-                                <b-form-checkbox-group v-model="lecture_model.author" id="checkboxes-4" class="mt-3">
-                                    <b-form-checkbox :value="user">Set me as author (for teachers recommended)
-                                    </b-form-checkbox>
-                                </b-form-checkbox-group>
+                                <!--<b-form-checkbox-group v-model="lecture_model.author" id="checkboxes-4" class="mt-3">-->
+                                <!--<b-form-checkbox :value="user">Set me as author (for teachers recommended)-->
+                                <!--</b-form-checkbox>-->
+                                <!--</b-form-checkbox-group>-->
                                 <b-button size="md" class="mt-3 btn-white btn-animation-1 btn-xl btn-hse"
                                           @click="add_lecture">
                                     Add lecture.
@@ -78,7 +79,7 @@
                         ></b-form-input>
                     </b-col>
                     <b-col>
-                        <b-button class="btn btn-white btn-animation-1 btn-xl" size="md">Find in archive.</b-button>
+                        <b-button class="btn btn-xl" size="md" pill disabled>Find in archive.</b-button>
                     </b-col>
                 </b-row>
                 <b-table class="mt-3" striped hover :items="lectures" :fields="fields">
@@ -86,7 +87,10 @@
                         {{item.index+1}}
                     </template>
                     <template slot="link" slot-scope="item">
-                        <a :href="item.item.link" class="hse_font_color btn btn-white btn-animation-1">Materials</a>
+                        <a :href="item.item.link" class="hse_font_color btn btn-white">Materials</a>
+                    </template>
+                    <template slot="Delete" slot-scope="item">
+                        <b-button pill @click="delete_lecture(item.item)" class="btn">X</b-button>
                     </template>
                 </b-table>
             </div>
@@ -116,41 +120,42 @@
             fields: [
                 'index',
                 {
-                    key: 'name',
+                    key: 'title',
                     sortable: false
                 },
-                {
-                    key: 'country',
-                    sortable: true
-                },
-                {
-                    key: 'lang',
-                    sortable: true
-                },
-                {
-                    key: 'type',
-                    sortable: true
-                },
-                {
-                    key: 'theme',
-                    sortable: true
-                },
-                {
-                    key: 'university',
-                    sortable: true
-                },
-                {
-                    key: 'course',
-                    sortable: true
-                },
-                {
-                    key: 'author',
-                    sortable: true
-                },
+                // {
+                //     key: 'country',
+                //     sortable: true
+                // },
+                // {
+                //     key: 'lang',
+                //     sortable: true
+                // },
+                // {
+                //     key: 'type',
+                //     sortable: true
+                // },
+                // {
+                //     key: 'theme',
+                //     sortable: true
+                // },
+                // {
+                //     key: 'university',
+                //     sortable: true
+                // },
+                // {
+                //     key: 'course',
+                //     sortable: true
+                // },
+                // {
+                //     key: 'author',
+                //     sortable: true
+                // },
                 {
                     key: 'link',
                     sortable: true
                 },
+                'Delete'
             ],
             lectures: [],
             select_options: {
@@ -188,9 +193,22 @@
                     country: 'Russia',
                     author: null,
                     title: null,
-                }
+                };
+                this.save_local()
+            },
+            delete_lecture(item) {
+                this.$delete(this.lectures, this.lectures.indexOf(item));
+                this.save_local()
+            },
+            save_local() {
+                localStorage.lectures_app = JSON.stringify(this.lectures);
             }
         },
+        created() {
+            if (localStorage.getItem('lectures_app')) {
+                this.lectures = JSON.parse(localStorage.getItem('lectures_app'))
+            }
+        }
     }
 </script>
 

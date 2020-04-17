@@ -2,40 +2,50 @@
     <div>
         <Navigation sub_header="Dashboard." link_path="/" link_name="Home."></Navigation>
         <b-container class="body_for_footer">
-            <b-row align-v="center">
-                <b-col>
-                    <b-card-group columns>
-                        <b-card :border-variant="input.variant"
-                                :header-bg-variant="input.variant"
-                                header-text-variant="white"
-                                align="center"
-                                footer-tag="footer">
-                            <b-card-text>
-                                <b-textarea v-model="input.body" placeholder="Enter body text"
-                                            style="border: none; box-shadow: none; resize: none;"
-                                            size="sm"></b-textarea>
-                            </b-card-text>
-                            <template v-slot:header>
-                                <b-row style="max-height: 10px;" aligh-h="end" class="text-right">
-                                    <b-col sm="12">
-                                        <div>
-                                            <b-button variant="secondary" pill
-                                                      @click="create">>
-                                            </b-button>
-                                        </div>
-                                    </b-col>
-                                </b-row>
-                            </template>
-                        </b-card>
-                        <div v-for="item in card">
-                            <card-component :item="item"
-                                            @delete_component="delete_item"
-                                            @change_item="change_variant"
-                            ></card-component>
-                        </div>
-                    </b-card-group>
-                </b-col>
-            </b-row>
+            <b-tabs content-class="mt-3" justified no-fade>
+                <div v-for="item in nots" v-bind:key="item.category_name">
+                    <b-tab lazy>
+                        <template v-slot:title>
+                            <b-input-group>
+                                <b-form-input v-model="item.new_name" spellcheck="false"
+                                              style="border: none; box-shadow: none;   color: transparent; text-shadow: 0 0 0 black;">
+                                </b-form-input>
+                                <template v-slot:prepend>
+                                    <div class="mr-1 btn-primary btn rounded-pill disabled">{{item.items.length}}</div>
+                                </template>
+                                <b-input-group-append class="ml-1">
+                                    <b-button pill variant="outline-success"
+                                              @click="save_name(item.category_name, item.new_name)">✓
+                                    </b-button>
+                                    <b-button pill variant="outline-danger" class="ml-1"
+                                              @click="delete_category(item.new_name)">×
+                                    </b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </template>
+                        <category-view :category_name="item.category_name" :items="item.items"
+                                       @re_save="save_local"></category-view>
+                    </b-tab>
+                </div>
+                <template v-slot:tabs-end>
+                    <b-nav-item @click="add_category('NewBoard')" class="input-group"><b style="font-size: 150%">+</b>
+                    </b-nav-item>
+                </template>
+            </b-tabs>
+            <div v-if="nots.length===0">
+                <b-row>
+                    <b-col>
+                        <Empty header="No boards... "></Empty>
+                    </b-col>
+                </b-row>
+                <b-row class="text-center">
+                    <b-col>
+                        <b-button class="btn-hse btn-white btn-animation-1 btn-xl" size="lg"
+                                  @click="add_category('NewBoard')">Create new board
+                        </b-button>
+                    </b-col>
+                </b-row>
+            </div>
         </b-container>
         <Footer></Footer>
     </div>
@@ -44,61 +54,52 @@
 <script>
     import Navigation from "../components/Navigation";
     import Footer from "../components/Footer";
+    import CategoryView from "./categoryView";
     import Empty from "../components/Empty";
-    import CardComponent from "../components/cardComponent";
 
     export default {
         name: "dashboardView",
-        components: {CardComponent, Empty, Footer, Navigation},
+        components: {Empty, CategoryView, Footer, Navigation},
         data: () => ({
-            input: {
-                header: '',
-                body: '',
-                footer: '',
-                variant: 'secondary'
-            },
-            show_buttons_flag: false,
-            card: []
+            nots: [],
+            flag: false,
         }),
         methods: {
-            create() {
-                // new Notification(this.input.body);
-                this.card.push(this.input);
-                this.input = {
-                    header: '',
-                    body: '',
-                    footer: '',
-                    variant: 'secondary'
-                };
-                this.save_in_browser();
-            },
-            delete_item(item) {
-                this.$delete(this.card, this.card.indexOf(item));
-                this.save_in_browser()
-            },
-            change_variant(variant, text, item) {
-                let index = this.card.indexOf(item);
-
-                this.card[index].body = text;
-                this.card[index].variant = variant;
-
-                this.save_in_browser()
-            },
-            save_in_browser() {
-                localStorage.nots = JSON.stringify(this.card);
-            },
-            load_from_browser() {
-                if (localStorage.getItem('nots')) {
-                    this.card = JSON.parse(localStorage.getItem('nots'))
+            save_local(items, category_name) {
+                for (let i = 0; i++; i < this.nots.length) {
+                    if (this.nots[i].category_name === category_name) {
+                        this.nots[i].items = items;
+                    }
                 }
+                localStorage.nots_app = JSON.stringify(this.nots);
+            },
+            add_category(name) {
+                this.nots.push({category_name: name, items: [], new_name: name});
+                localStorage.nots_app = JSON.stringify(this.nots);
+            },
+            delete_category(name) {
+                let index = -1;
+                for (let i = 0; i < this.nots.length; i++) {
+                    if (this.nots[i].category_name === name || this.nots[i].new_name === name) {
+                        index = i;
+                    }
+                }
+                this.$delete(this.nots, index);
+                localStorage.nots_app = JSON.stringify(this.nots);
+            },
+            save_name(old_name, new_name) {
+                for (let i = 0; i < this.nots.length; i++) {
+                    if (this.nots[i].category_name === old_name) {
+                        this.nots[i].category_name = new_name;
+                    }
+                }
+                localStorage.nots_app = JSON.stringify(this.nots);
             }
-
         },
         created() {
-            if (Notification.permission !== 'granted') {
-                Notification.requestPermission();
+            if (localStorage.getItem('nots_app')) {
+                this.nots = JSON.parse(localStorage.getItem('nots_app'))
             }
-            this.load_from_browser();
         }
     }
 </script>

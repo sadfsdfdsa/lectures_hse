@@ -2,7 +2,7 @@
     <div class="hse_nav_background hse_nav_font_color container-fluid">
         <b-row align-v="center">
             <b-col class="ml-5 hse_nav_header_main">
-                <router-link to="/dashboard"><h1><span class="align-middle" style="color: white">On|{{sub_header}}</span></h1>
+                <router-link to="/"><h1><span class="align-middle" style="color: white">On|{{sub_header}}</span></h1>
                 </router-link>
             </b-col>
             <b-col class="text-right mr-5">

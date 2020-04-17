@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Navigation sub_header="Blog." link_path="/" link_name="Home."></Navigation>
+        <Navigation sub_header="Blog." link_path="/dashboard" link_name="Dashboard."></Navigation>
         <b-container class="body_for_footer">
             <b-row class="mt-5">
                 <b-col>

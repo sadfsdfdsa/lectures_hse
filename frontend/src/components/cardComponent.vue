@@ -16,21 +16,24 @@
         <template v-slot:header>
             <b-row align-h="between" style="max-height: 10px;">
                 <b-col sm="2">
-                    <b-button :variant="variant_self" pill @click="onClickButton" size="sm">
-                        x
+                    <b-button :variant="variant_self" pill @click="onClickButton" size="md" class="active">
+                        ×
                     </b-button>
                 </b-col>
                 <b-col sm="7">
-                    <b-button variant="primary" pill size="sm"
-                              @click="change_variant('primary')">M
-                    </b-button>
-                    <b-button variant="danger" pill size="sm" @click="change_variant('danger')">W
-                    </b-button>
-                    <b-button variant="success" pill size="sm"
-                              @click="change_variant('success')">M
+                    <b-button variant="danger" pill size="sm" @click="change_variant('danger')">&emsp;
                     </b-button>
                     <b-button variant="warning" pill size="sm"
-                              @click="change_variant('warning')">W
+                              @click="change_variant('warning')">&emsp;
+                    </b-button>
+                    <b-button variant="primary" pill size="sm"
+                              @click="change_variant('primary')">&emsp;
+                    </b-button>
+                    <b-button variant="success" pill size="sm"
+                              @click="change_variant('success')">&emsp;
+                    </b-button>
+                    <b-button variant="secondary" pill size="sm"
+                              @click="change_variant('secondary')">&emsp;
                     </b-button>
                 </b-col>
             </b-row>
@@ -48,7 +51,7 @@
             tmp: null
         }),
         methods: {
-            onClickButton(event) {
+            onClickButton() {
                 this.$emit('delete_component', this.tmp)
             },
             change_item() {

@@ -9,25 +9,27 @@
                     </b-row>
                     <b-row>
                         <b-col>
-                            <p><strong>Жаждете делиться знаниями?</strong></p>
-                            <p>Делитесь знаниями, получайте их и передавайте другим!</p>
-                            <p>Создавайте лекции, клубы общения, организовывайте онлайн встречи, сообщите об этом
-                                остальным.</p>
-                            <p><strong>Хотите получить знания или просто пообщаться?</strong></p>
-                            <p>Ищите клубы по интересам, подключайтесь к лекциям и сеансам общения, контактируйте с
-                                миром, когда это так важно.</p>
-                            <p ><strong>Начните учиться, подключайтесь к лекциям, проведите время с пользой!</strong></p>
+                            <p><strong>Это платформа для улучшения организации Ваших заметок!</strong></p>
+                            <p>Планируйте лекции, сохраняйте ссылки на них и делитесь ими.</p>
+                            <p>Создавайте категории и заметки для самых нужных вещей.</p>
                         </b-col>
                     </b-row>
+
                 </b-col>
                 <b-col class="text-center">
                     <b-img :src="images.first" lazy></b-img>
                 </b-col>
             </b-row>
-            <b-row class="text-center mt-5">
-                <b-col class="mt-5">
+            <b-row class="text-center mt-3 hse_font_color">
+                <b-col><h2>Попробуйте!</h2></b-col>
+            </b-row>
+            <b-row class="text-center mt-2">
+                <b-col>
                     <b-button to="/lectures" size="lg" class="btn-white btn-animation-1 btn-xl btn-hse">
-                        Start studying now.
+                        Lectures planner
+                    </b-button>
+                    <b-button to="/dashboard" size="lg" class="btn-white btn-animation-1 btn-xl btn-hse">
+                        Dashboard
                     </b-button>
                 </b-col>
             </b-row>
