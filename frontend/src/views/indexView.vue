@@ -17,18 +17,20 @@
 
                 </b-col>
                 <b-col class="text-center">
-                    <b-img :src="images.first" lazy></b-img>
+                    <b-img :src="images.first" lazy fluid></b-img>
                 </b-col>
             </b-row>
             <b-row class="text-center mt-3 hse_font_color">
                 <b-col><h2>Попробуйте!</h2></b-col>
             </b-row>
-            <b-row class="text-center mt-2">
-                <b-col>
-                    <b-button to="/lectures" size="lg" class="btn-white btn-animation-1 btn-xl btn-hse">
+            <b-row class="text-center mt-2" align-h="center">
+                <b-col sm="3">
+                    <b-button to="/lectures" size="lg" class="btn-white btn-animation-1  btn-hse">
                         Lectures planner
                     </b-button>
-                    <b-button to="/dashboard" size="lg" class="btn-white btn-animation-1 btn-xl btn-hse">
+                </b-col>
+                <b-col sm="3">
+                    <b-button to="/dashboard" size="lg" class="btn-white btn-animation-1  btn-hse">
                         Dashboard
                     </b-button>
                 </b-col>

@@ -7,20 +7,37 @@
             :bg-variant="variant_self"
     >
         <b-card-text>
-            <b-textarea v-model="text_self" spellcheck="false"
-                        :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
-                        style="border: none; box-shadow: none; resize: none;"
-                        size="sm" @change='change_item'
-            ></b-textarea>
+            <b-row style="max-height: 25px;">
+                <b-col>
+                    <b-input v-model="header_self" placeholder="Header" spellcheck="false"
+                             :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
+                             style="border: none; box-shadow: none; font-size: 120%"
+                             size="sm" @change='change_item'></b-input>
+                </b-col>
+            </b-row>
+            <hr>
+            <b-row>
+                <b-col>
+                    <b-textarea v-model="text_self" spellcheck="false" placeholder="Text"
+                                :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
+                                style="border: none; box-shadow: none; resize: none; overflow: auto"
+                                size="sm" @change='change_item' max-rows="60"
+                    ></b-textarea>
+                </b-col>
+            </b-row>
+            <b-row :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
+                   style="max-height: 10px">
+                <b-col class="text-left" style="font-size: 80%">
+                    <em>{{item.date}}</em>
+                </b-col>
+            </b-row>
         </b-card-text>
         <template v-slot:header>
-            <b-row align-h="between" style="max-height: 10px;">
-                <b-col sm="2">
-                    <b-button :variant="variant_self" pill @click="onClickButton" size="md" class="active">
+            <b-row class="justify-content-between" style="max-height: 26px">
+                <b-col>
+                    <b-button :variant="variant_self" pill @click="onClickButton" size="md" class="active mr-5">
                         ×
                     </b-button>
-                </b-col>
-                <b-col sm="7">
                     <b-button variant="danger" pill size="sm" @click="change_variant('danger')">&emsp;
                     </b-button>
                     <b-button variant="warning" pill size="sm"
@@ -48,6 +65,7 @@
         data: () => ({
             text_self: '',
             variant_self: 'secondary',
+            header_self: '',
             tmp: null
         }),
         methods: {
@@ -55,7 +73,7 @@
                 this.$emit('delete_component', this.tmp)
             },
             change_item() {
-                this.$emit('change_item', this.variant_self, this.text_self, this.tmp);
+                this.$emit('change_item', this.variant_self, this.text_self, this.header_self, this.tmp);
                 this.tmp.body = this.text_self;
                 this.tmp.variant = this.variant_self;
             },
@@ -67,6 +85,7 @@
         created() {
             this.text_self = this.item.body;
             this.variant_self = this.item.variant;
+            this.header_self = this.item.header;
             this.tmp = this.item;
         }
     }

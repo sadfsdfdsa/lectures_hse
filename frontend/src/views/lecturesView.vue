@@ -82,17 +82,21 @@
                         <b-button class="btn btn-xl" size="md" pill disabled>Find in archive.</b-button>
                     </b-col>
                 </b-row>
-                <b-table class="mt-3" striped hover :items="lectures" :fields="fields">
-                    <template slot="index" slot-scope="item">
-                        {{item.index+1}}
-                    </template>
-                    <template slot="link" slot-scope="item">
-                        <a :href="item.item.link" class="hse_font_color btn btn-white">Materials</a>
-                    </template>
-                    <template slot="Delete" slot-scope="item">
-                        <b-button pill @click="delete_lecture(item.item)" class="btn">X</b-button>
-                    </template>
-                </b-table>
+                <b-row>
+                    <b-col>
+                        <b-table class="mt-3" striped hover :items="lectures" :fields="fields">
+                            <template slot="index" slot-scope="item">
+                                {{item.index+1}}
+                            </template>
+                            <template slot="link" slot-scope="item">
+                                <a :href="item.item.link" class="hse_font_color btn btn-white">Materials</a>
+                            </template>
+                            <template slot="Delete" slot-scope="item">
+                                <b-button pill @click="delete_lecture(item.item)" class="btn">X</b-button>
+                            </template>
+                        </b-table>
+                    </b-col>
+                </b-row>
             </div>
             <b-row v-else class="mt-4">
                 <b-col>

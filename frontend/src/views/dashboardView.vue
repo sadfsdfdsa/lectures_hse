@@ -2,7 +2,7 @@
     <div>
         <Navigation sub_header="Dashboard." link_path="/" link_name="Home."></Navigation>
         <b-container class="body_for_footer">
-            <b-tabs content-class="mt-3" justified no-fade>
+            <b-tabs content-class="mt-3" no-fade>
                 <div v-for="item in nots" v-bind:key="item.category_name">
                     <b-tab lazy>
                         <template v-slot:title>
@@ -28,7 +28,7 @@
                     </b-tab>
                 </div>
                 <template v-slot:tabs-end>
-                    <b-nav-item @click="add_category('NewBoard')" class="input-group"><b style="font-size: 150%">+</b>
+                    <b-nav-item @click="add_category('NewBoard')"><b>+</b>
                     </b-nav-item>
                 </template>
             </b-tabs>
@@ -40,7 +40,7 @@
                 </b-row>
                 <b-row class="text-center">
                     <b-col>
-                        <b-button class="btn-hse btn-white btn-animation-1 btn-xl" size="lg"
+                        <b-button class="btn-hse btn-white btn-animation-1" size="lg"
                                   @click="add_category('NewBoard')">Create new board
                         </b-button>
                     </b-col>
