@@ -1,6 +1,8 @@
 <template>
     <div>
-        <Navigation sub_header="Lectures." link_name="Blog." link_path="/blog"></Navigation>
+        <Navigation sub_header="Lectures." link_name="Blog." link_path="/blog"
+                    notification="Этот раздел в стадии разработки, рекомендуем пользоваться Dashboard"
+                    variant="warning"></Navigation>
         <b-container class="body_for_footer">
             <b-row>
                 <b-col class="text-center">

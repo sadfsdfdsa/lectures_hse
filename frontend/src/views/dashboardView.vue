@@ -8,15 +8,16 @@
                         <template v-slot:title>
                             <b-input-group>
                                 <b-form-input v-model="item.new_name" spellcheck="false"
+                                              @change="save_name(item.category_name, item.new_name)"
                                               style="border: none; box-shadow: none;   color: transparent; text-shadow: 0 0 0 black;">
                                 </b-form-input>
                                 <template v-slot:prepend>
                                     <div class="mr-1 btn-primary btn rounded-pill disabled">{{item.items.length}}</div>
                                 </template>
                                 <b-input-group-append class="ml-1">
-                                    <b-button pill variant="outline-success"
-                                              @click="save_name(item.category_name, item.new_name)">✓
-                                    </b-button>
+                                    <!--<b-button pill variant="outline-success"-->
+                                    <!--@click="save_name(item.category_name, item.new_name)">✓-->
+                                    <!--</b-button>-->
                                     <b-button pill variant="outline-danger" class="ml-1"
                                               @click="delete_category(item.new_name)">×
                                     </b-button>
@@ -28,7 +29,7 @@
                     </b-tab>
                 </div>
                 <template v-slot:tabs-end>
-                    <b-nav-item @click="add_category('NewBoard')"><b>+</b>
+                    <b-nav-item @click="add_category('NewBoard'+count)"><b>+</b>
                     </b-nav-item>
                 </template>
             </b-tabs>
@@ -63,6 +64,7 @@
         data: () => ({
             nots: [],
             flag: false,
+            count: 1
         }),
         methods: {
             save_local(items, category_name) {
@@ -74,6 +76,7 @@
                 localStorage.nots_app = JSON.stringify(this.nots);
             },
             add_category(name) {
+                this.count++;
                 this.nots.push({category_name: name, items: [], new_name: name});
                 localStorage.nots_app = JSON.stringify(this.nots);
             },

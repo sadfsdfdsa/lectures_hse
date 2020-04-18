@@ -25,30 +25,42 @@
                     ></b-textarea>
                 </b-col>
             </b-row>
-            <b-row :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
-                   style="max-height: 10px">
-                <b-col class="text-left" style="font-size: 80%">
+            <b-row :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')" no-gutters>
+                <b-col class="text-left" style="font-size: 80%" sm="3">
                     <em>{{item.date}}</em>
                 </b-col>
+                <div sm="2" v-for="link in item.links" class="text-right" v-bind:key="link.name">
+                    <a class="btn rounded-pill btn-sm btn-primary hse_font_color active" :href="link.value">{{link.name}}</a>
+                </div>
             </b-row>
         </b-card-text>
         <template v-slot:header>
-            <b-row class="justify-content-between" style="max-height: 26px">
-                <b-col>
-                    <b-button :variant="variant_self" pill @click="onClickButton" size="md" class="active mr-5">
+            <b-row style="max-height: 26px" cols-sm="6" no-gutters>
+                <b-col class="text-left">
+                    <b-button :variant="variant_self" pill @click="onClickButton" class="active mr-5">
                         ×
                     </b-button>
+                </b-col>
+                <b-col class="text-right">
                     <b-button variant="danger" pill size="sm" @click="change_variant('danger')">&emsp;
                     </b-button>
+                </b-col>
+                <b-col class="text-right">
                     <b-button variant="warning" pill size="sm"
                               @click="change_variant('warning')">&emsp;
                     </b-button>
+                </b-col>
+                <b-col class="text-right">
                     <b-button variant="primary" pill size="sm"
                               @click="change_variant('primary')">&emsp;
                     </b-button>
+                </b-col>
+                <b-col class="text-right">
                     <b-button variant="success" pill size="sm"
                               @click="change_variant('success')">&emsp;
                     </b-button>
+                </b-col>
+                <b-col class="text-right">
                     <b-button variant="secondary" pill size="sm"
                               @click="change_variant('secondary')">&emsp;
                     </b-button>

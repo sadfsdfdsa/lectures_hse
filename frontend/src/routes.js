@@ -3,6 +3,9 @@ import lecturesView from "./views/lecturesView";
 import blogView from "./views/blogView";
 import dashboardView from "./views/dashboardView";
 
+require('../src/css/hse.css');
+
+
 const routes = [
     {
         path: "/",
