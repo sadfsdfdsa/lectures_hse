@@ -6,7 +6,7 @@
                 </router-link>
             </b-col>
             <b-col class="text-right">
-                <router-link :to="link_path" class="hse_a"><h3>->{{link_name}}</h3></router-link>
+                <router-link :to="link_path" class="hse_a"><h3>→{{link_name}}</h3></router-link>
             </b-col>
         </b-row>
         <b-row v-if="notf" :class="'text-center alert-'+variant" @click="checked">

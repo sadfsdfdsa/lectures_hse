@@ -25,19 +25,36 @@
                                                 :formatter="formatter" :tabindex="2"></b-textarea>
                                 </b-col>
                             </b-row>
-                            <b-row>
-                                <b-col class="text-left" sm="3">
-                                    <b-form-checkbox v-model="date_flag"><em>Date</em>
+                            <hr>
+                            <b-row no-gutters>
+                                <b-col class="text-left" align-self="center">
+                                    <b-form inline>
+                                        <b-form-datepicker
+                                                v-model="tmp_deadline_date"
+                                                button-only
+                                                locale="en-US"
+                                                aria-controls="example-input"
+                                                button-variant reset-button
+                                                value-as-date :reset-value="null"
+                                                dropup
+                                        ></b-form-datepicker>
+                                        <b-form-timepicker
+                                                dropup
+                                                v-model="tmp_deadline_time"
+                                                button-only reset-button :reset-value="null"
+                                                aria-controls="example-input" no-close-button button-variant
+                                        ></b-form-timepicker>
+                                    </b-form>
+                                </b-col>
+                                <b-col class="text-right" align-self="center">
+                                    <b-form-checkbox v-model="notification_flag"><em>Notification</em>
                                     </b-form-checkbox>
                                 </b-col>
-
-                                <div sm="2" v-for="(link, index) in input.links" v-bind:key="index">
-                                    <b-button @click="delete_link(index)" pill size="sm" variant="outline-primary">
-                                        {{link.name}}
+                            </b-row>
+                            <b-row class="mt-1">
+                                <b-col class="text-left" align-self="center" sm="4">
+                                    <b-button size="sm" pill v-b-modal.modal-1 variant="secondary">Add link
                                     </b-button>
-                                </div>
-                                <b-col v-if="input.links.length<=3" class="text-right">
-                                    <b-button size="sm" pill v-b-modal.modal-1>Add link</b-button>
                                     <b-modal id="modal-1" hide-footer centered ref="modal-1">
                                         <template v-slot:modal-title>
                                             <span class="hse_font_color">Add link</span>
@@ -73,14 +90,21 @@
                                         </div>
                                     </b-modal>
                                 </b-col>
+                                <div v-for="(link, index) in input.links" v-bind:key="index">
+                                    <b-button @click="delete_link(index)" pill size="sm" variant="outline-primary">
+                                        {{link.name}}
+                                    </b-button>
+                                </div>
                             </b-row>
                         </b-card-text>
                         <template v-slot:header>
                             <b-row style="max-height: 10px;" aligh-h="end" no-gutters>
+                                <b-col class="text-left" v-if="deadlineDate">{{deadlineDateString}}
+                                </b-col>
                                 <b-col class="text-right">
                                     <div>
                                         <b-button variant="secondary" pill size="md"
-                                                  @click="create" class="active" :tabindex="3">>
+                                                  @click="create" class="active" :tabindex="3">+
                                         </b-button>
                                     </div>
                                 </b-col>
@@ -96,8 +120,8 @@
                 </b-card-group>
             </b-col>
         </b-row>
-        <b-row v-if="items.length===0">
-            <b-col>
+        <b-row>
+            <b-col v-if="items.length===0">
                 <Empty header="Create new note!"></Empty>
             </b-col>
         </b-row>
@@ -118,17 +142,17 @@
                 body: '',
                 footer: '',
                 variant: 'secondary',
-                date: '',
+                date: null,
                 links: [] // link = {name: string, value: string}
             },
             tmp_link_value: '',
             tmp_link_name: '',
             tmp_link_note: '',
-            date_flag: false,
+            tmp_deadline_time: null,
+            tmp_deadline_date: null,
+            notification_flag: false,
             show_buttons_flag: false,
             card: [],
-            deadline_time: null,
-            deadline_date: null
         }),
         methods: {
             delete_link(index) {
@@ -147,22 +171,41 @@
                 this.tmp_link_note = ''
             },
             create() {
-                if (this.date_flag) {
-                    this.input.date = new Date().toISOString().split('T')[0]
+                if (this.deadlineDate !== null) {
+                    this.input.date = new Date(this.deadlineDate.getTime());
+                    if (this.notification_flag) {
+                        this.set_notification(this.input.header)
+                    }
                 }
-                // new Notification(this.input.body);
                 this.card.push(this.input);
                 this.input = {
                     header: '',
                     body: '',
                     footer: '',
                     variant: 'secondary',
-                    date: '',
+                    date: null,
                     links: []
                 };
-                this.date_flag = false;
+                this.tmp_deadline_time = null;
+                this.tmp_deadline_date = null;
+                this.notification_flag = false;
                 this.save_in_browser();
                 this.$refs[this.category_name].focus();
+            },
+            set_notification(header) {
+                if (Notification.permission === "granted")
+                    setTimeout(() => {
+                        let board = this.category_name;
+                        let tmp = new Notification(
+                            this.category_name + ': ' + header
+                        );
+                        tmp.onclick = function () {
+                            window.open('/dashboard?board=' + board + '&note=' + header);
+                        }
+                    }, this.deadlineDate.getTime() - new Date().getTime());
+                else {
+                    Notification.requestPermission().then(this.set_notification(header));
+                }
             },
             delete_item(item) {
                 this.$delete(this.card, this.card.indexOf(item));
@@ -205,6 +248,12 @@
                     }
                 }
                 return false;
+            },
+            add_null(value, limit) {
+                if (value < limit) {
+                    return '0' + value
+                }
+                return value.toString()
             }
         },
         created() {
@@ -229,6 +278,22 @@
                     })
                 });
                 return tmp;
+            },
+            deadlineDate: function () {
+                if (!this.tmp_deadline_date) {
+                    return null
+                }
+                if (!this.tmp_deadline_time) {
+                    return this.tmp_deadline_date
+                } else {
+                    this.tmp_deadline_date.setHours(parseInt(this.tmp_deadline_time.split(':')[0]));
+                    this.tmp_deadline_date.setMinutes(parseInt(this.tmp_deadline_time.split(':')[1]));
+                    return this.tmp_deadline_date
+                }
+            },
+            deadlineDateString: function () {
+                let tmp = this.deadlineDate;
+                return this.add_null(tmp.getDate(), 10) + '.' + this.add_null((tmp.getMonth() + 1), 10) + '.' + tmp.getFullYear() + ' ' + this.add_null(tmp.getHours(), 10) + ':' + this.add_null(tmp.getMinutes(), 10)
             }
         }
     }

@@ -13,36 +13,56 @@
                 This note was in link!
             </b-tooltip>
             <b-row style="max-height: 25px;">
-                <b-col>
+                <b-col class="text-left ml-2">
                     <b-input v-model="header_self" placeholder="Header" spellcheck="false"
-                             :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
-                             style="border: none; box-shadow: none; font-size: 120%"
-                             size="sm" @change='change_item'></b-input>
+                    :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
+                    style="border: none; box-shadow: none; font-size: 120%"
+                    size="sm" @change='change_item'></b-input>
+                    <!--<p :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"-->
+                       <!--style="font-size: 120%">{{header_self}}</p>-->
                 </b-col>
             </b-row>
             <hr>
             <b-row>
                 <b-col>
-                    <b-textarea v-model="text_self" spellcheck="false" placeholder="Text"
-                                :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
-                                style="border: none; box-shadow: none; resize: none; overflow: auto"
-                                size="sm" @change='change_item' max-rows="60"
-                    ></b-textarea>
+                    <b-form-group>
+                        <b-textarea v-model="text_self" spellcheck="false" placeholder="Text"
+                                    :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"
+                                    style="border: none; box-shadow: none; resize: none; overflow: auto"
+                                    size="sm" @change='change_item' max-rows="60"
+                        ></b-textarea>
+                    </b-form-group>
                 </b-col>
             </b-row>
-            <b-row :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')" no-gutters>
-                <b-col class="text-left" style="font-size: 80%" sm="3">
-                    <em>{{item.date}}</em>
-                </b-col>
+            <hr v-if="this.tmp.date!==null||this.item.links.length>0">
+            <b-row>
                 <div sm="2" v-for="link in item.links" class="text-right" v-bind:key="link.name">
                     <a class="btn rounded-pill btn-sm btn-primary hse_font_color active" :href="link.value"
                        target="_blank">{{link.name}}</a>
                     <!-- :target="link_to_note(link.value)"-->
                 </div>
             </b-row>
+            <b-row v-if="this.tmp.date!==null"
+                   :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')" no-gutters>
+                <b-col class="text-left" style="font-size: 80%">
+                    <em>{{deadlineDateString}} </em>
+                </b-col>
+                <b-col class="text-right" style="font-size: 80%" v-if="deadlineLeft.days>5">
+                    <em>{{deadlineLeft.days}} days left</em>
+                </b-col>
+                <b-col class="text-right" style="font-size: 80%" v-else-if="deadlineLeft.days>=1">
+                    <em>{{deadlineLeft.days}} days {{deadlineLeft.hours}} hours left</em>
+                </b-col>
+                <b-col class="text-right" style="font-size: 80%" v-else-if="deadlineLeft.days===0">
+                    <em>{{deadlineLeft.hours}} hours {{deadlineLeft.minutes}} minutes left</em>
+                </b-col>
+                <b-col class="text-right" style="font-size: 80%" v-else>
+                    <em><strong>Deadline end</strong></em>
+                </b-col>
+            </b-row>
         </b-card-text>
         <template v-slot:header>
-            <b-row style="max-height: 26px" cols-sm="6" no-gutters>
+            <b-row style="max-height: 20px" cols-sm="6" no-gutters>
                 <b-col class="text-left">
                     <b-button :variant="variant_self" pill @click="onClickButton" class="active mr-5">
                         ×
@@ -103,7 +123,13 @@
             },
             // link_to_note(value) {
             //     return value.includes('localhost') || value.includes('hse-onlecture') ? '_parent' : '_blank';
-            // }
+            // },
+            add_null(value, limit = 10) {
+                if (value < limit) {
+                    return '0' + value
+                }
+                return value.toString()
+            }
         },
         created() {
             this.text_self = this.item.body;
@@ -111,6 +137,40 @@
             this.header_self = this.item.header;
             this.tmp = this.item;
         },
+        computed: {
+            deadlineLeft: function () {
+                if (this.item.date === null) {
+                    return null
+                }
+                let tmp = new Date(this.item.date);
+                if (tmp === null) {
+                    return ''
+                }
+                let delta = (tmp.getTime() - new Date().getTime()) / 1000;
+                if (delta < 0) {
+                    return {days: -1}
+                }
+
+                let days = Math.floor(delta / 86400);
+                delta -= days * 86400;
+
+                let hours = Math.floor(delta / 3600) % 24;
+                delta -= hours * 3600;
+
+                let minutes = Math.floor(delta / 60) % 60;
+                delta -= minutes * 60;
+                return {days: days, hours: hours, minutes: minutes};
+
+            },
+            deadlineDateString: function () {
+                if (this.item.date === null) {
+                    return ''
+                }
+                let tmp = new Date(this.item.date);
+
+                return this.add_null(tmp.getDate(), 10) + '.' + this.add_null((tmp.getMonth() + 1), 10) + '.' + tmp.getFullYear() + ' ' + this.add_null(tmp.getHours(), 10) + ':' + this.add_null(tmp.getMinutes(), 10)
+            }
+        }
     }
 </script>
 

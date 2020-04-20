@@ -5,7 +5,7 @@
                     show_once="true"
         ></Navigation>
         <b-container class="body_for_footer">
-            <b-tabs content-class="mt-3" no-fade >
+            <b-tabs content-class="mt-3" no-fade>
                 <div v-for="item in sortedNots" v-bind:key="item.category_name">
                     <b-tab lazy @click="save_opened_table(item.category_name)"
                            :active="item.category_name===last_table?'active':null">
@@ -82,6 +82,7 @@
                 this.count++;
                 this.nots.push({category_name: name, items: [], new_name: name});
                 localStorage.nots_app = JSON.stringify(this.nots);
+                this.save_opened_table(name)
             },
             delete_category(name) {
                 let index = -1;
