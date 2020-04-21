@@ -4,7 +4,7 @@
                     notification="Информация об обновлении в блоге" variant="success"
                     show_once="true"
         ></Navigation>
-        <b-container class="body_for_footer">
+        <b-container class="body_for_footer" fluid>
             <b-tabs content-class="mt-3" no-fade>
                 <b-tab lazy v-if="sortedNots.length>0"
                        @click="save_opened_table('calendar board')"
@@ -53,11 +53,11 @@
                 <template v-slot:tabs-start v-if="sortedNots.length>0" class="ml-2 ">
                     <b-row align-v="center">
                         <b-col>
-                            <b-button-group size="sm">
-                                <b-button :class="(style==='Default style'?'active':'')" variant="outline-primary" pill
+                            <b-button-group>
+                                <b-button :class="(style==='Default style'?'active':'')" variant="outline-primary"
                                           @click="set_style('Default style')">Style 1
                                 </b-button>
-                                <b-button :class="style==='Outline style'?'active':''" variant="outline-primary" pill
+                                <b-button :class="style==='Outline style'?'active':''" variant="outline-primary"
                                           @click="set_style('Outline style')">
                                     Style 2
                                 </b-button>
