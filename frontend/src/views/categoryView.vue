@@ -3,7 +3,7 @@
         <b-row align-v="center">
             <b-col>
                 <b-row>
-                    <b-col sm="3" class="text-left" v-if="!this.disabled">
+                    <b-col sm="6" md="6" lg="3" class="text-left" v-if="!this.disabled">
                         <b-card class="shadow shadow-sm mb-4"
                                 :border-variant="input.variant"
                                 align="center"
@@ -114,7 +114,7 @@
                             </template>
                         </b-card>
                     </b-col>
-                    <b-col sm="3" class="text-left" v-for="item in sortedItems" v-bind:key="item.header">
+                    <b-col sm="6" md="6" lg="3" class="text-left" v-for="item in sortedItems" v-bind:key="item.header">
                         <card-component :item="item" :active="active_card===item.header"
                                         :category_name="category_name"
                                         @delete_component="delete_item"
