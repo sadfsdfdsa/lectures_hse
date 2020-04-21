@@ -102,7 +102,7 @@
             <b-row v-else style="max-height: 30px" no-gutters align-v="center">
                 <b-col class="text-left">{{item.board_name}}</b-col>
                 <b-col class="text-right" self><a class="rounded-pill btn-sm btn-primary"
-                                                  :href="'?board='+item.board_name+'&note='+item.header">Go to note</a>
+                                                  :href="'?board='+item.board_name+'&note='+item.header">Note link</a>
                 </b-col>
             </b-row>
         </template>
