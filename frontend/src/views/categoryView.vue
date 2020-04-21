@@ -27,7 +27,7 @@
                             </b-row>
                             <hr>
                             <b-row no-gutters>
-                                <b-col class="text-left" align-self="center">
+                                <b-col>
                                     <b-form inline>
                                         <b-form-datepicker
                                                 v-model="tmp_deadline_date"
@@ -46,7 +46,8 @@
                                         ></b-form-timepicker>
                                     </b-form>
                                 </b-col>
-                                <b-col class="text-right" align-self="center">
+                                <b-col v-if="deadlineDate" sm="5" class="text-left">
+                                    {{deadlineDateString}}
                                     <b-form-checkbox v-model="notification_flag"><em>Notification</em>
                                     </b-form-checkbox>
                                 </b-col>
@@ -98,23 +99,24 @@
                             </b-row>
                         </b-card-text>
                         <template v-slot:header>
-                            <b-row style="max-height: 10px;" aligh-h="end" no-gutters>
-                                <b-col class="text-left" v-if="deadlineDate">{{deadlineDateString}}
+                            <b-row style="max-height: 15px;" aligh-h="end" no-gutters>
+                                <b-col class="text-left">
+                                    New note form
                                 </b-col>
                                 <b-col class="text-right">
-                                    <div>
-                                        <b-button variant="secondary" pill size="md"
-                                                  @click="create" class="active" :tabindex="3">+
-                                        </b-button>
-                                    </div>
+                                    <b-button variant="secondary" pill size="lg"
+                                              @click="create" class="active" :tabindex="3">+
+                                    </b-button>
                                 </b-col>
                             </b-row>
                         </template>
                     </b-card>
-                    <div v-for="item in sortedItems" v-bind:key="item.body">
+                    <div v-for="item in sortedItems" v-bind:key="item.header">
                         <card-component :item="item" :active="active_card===item.header"
+                                        :category_name="category_name"
                                         @delete_component="delete_item"
                                         @change_item="change_variant"
+                                        :style_schema="style_schema"
                         ></card-component>
                     </div>
                 </b-card-group>
@@ -135,7 +137,7 @@
     export default {
         name: "categoryView",
         components: {Empty, CardComponent},
-        props: ['category_name', 'items', 'active_card'],
+        props: ['category_name', 'items', 'active_card', 'style_schema'],
         data: () => ({
             input: {
                 header: '',
@@ -171,6 +173,10 @@
                 this.tmp_link_note = ''
             },
             create() {
+                if (this.input.header === '' || this.headersArray.includes(this.input.header)) {
+                    this.$snotify.warning('Headers cannot be repeated or empty.');
+                    return;
+                }
                 if (this.deadlineDate !== null) {
                     this.input.date = new Date(this.deadlineDate.getTime());
                     if (this.notification_flag) {
@@ -212,6 +218,10 @@
                 this.save_in_browser()
             },
             change_variant(variant, text, header, item) {
+                if (this.headersArray.includes(header) && header !== item.header && header !== '') {
+                    this.$snotify.warning('Headers cannot be repeated or empty.');
+                    return;
+                }
                 let index = this.card.indexOf(item);
 
                 this.card[index].body = text;
@@ -279,17 +289,36 @@
                 });
                 return tmp;
             },
+            headersArray: function () {
+                let nots = JSON.parse(localStorage.getItem('nots_app'));
+                let category = [];
+                nots.forEach((item) => {
+                    if (item.category_name === this.category_name) {
+                        category = item;
+                        return;
+                    }
+                });
+                let tmp = [];
+                category.items.forEach((item) => {
+                    tmp.push(item.header)
+                });
+                return tmp;
+            },
             deadlineDate: function () {
-                if (!this.tmp_deadline_date) {
+                if (!this.tmp_deadline_date && !this.tmp_deadline_time) {
                     return null
                 }
                 if (!this.tmp_deadline_time) {
-                    return this.tmp_deadline_date
-                } else {
-                    this.tmp_deadline_date.setHours(parseInt(this.tmp_deadline_time.split(':')[0]));
-                    this.tmp_deadline_date.setMinutes(parseInt(this.tmp_deadline_time.split(':')[1]));
-                    return this.tmp_deadline_date
+                    // eslint-disable-next-line
+                    this.tmp_deadline_time = '00:00';
                 }
+                if (!this.tmp_deadline_date) {
+                    // eslint-disable-next-line
+                    this.tmp_deadline_date = new Date();
+                }
+                this.tmp_deadline_date.setHours(parseInt(this.tmp_deadline_time.split(':')[0]));
+                this.tmp_deadline_date.setMinutes(parseInt(this.tmp_deadline_time.split(':')[1]));
+                return this.tmp_deadline_date
             },
             deadlineDateString: function () {
                 let tmp = this.deadlineDate;

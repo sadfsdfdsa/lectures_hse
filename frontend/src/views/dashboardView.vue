@@ -26,11 +26,24 @@
                             </b-input-group>
                         </template>
                         <category-view :category_name="item.category_name" :items="item.items" :active_card="focus_card"
+                                       :style_schema="style"
                                        @re_save="save_local"></category-view>
                     </b-tab>
                 </div>
+                <template v-slot:tabs-start>
+                    <b-button-group size="sm" v-if="sortedNots.length>0">
+                        <b-button :class="(style==='Default style'?'active':'')" variant="outline-primary"
+                                  @click="set_style('Default style')">Default style
+                        </b-button>
+                        <b-button :class="style==='Outline style'?'active':''" variant="outline-primary"
+                                  @click="set_style('Outline style')">
+                            Outline style
+                            <span class="badge badge-success mt-1" style="vertical-align: top">New</span>
+                        </b-button>
+                    </b-button-group>
+                </template>
                 <template v-slot:tabs-end>
-                    <b-nav-item @click="add_category('NewBoard'+count)"><b>+</b>
+                    <b-nav-item @click="add_category('Board#'+generate_int()+'(editable)')"><b>+</b>
                     </b-nav-item>
                 </template>
             </b-tabs>
@@ -42,8 +55,8 @@
                 </b-row>
                 <b-row class="text-center">
                     <b-col>
-                        <b-button class="btn-hse btn-white btn-animation-1" size="lg"
-                                  @click="add_category('NewBoard')">Create new board
+                        <b-button class="btn-hse btn-white btn-animation-1" size="lg" variant="primary" pill
+                                  @click="add_category('YourFirstBoard(editable)')">Create new board
                         </b-button>
                     </b-col>
                 </b-row>
@@ -65,11 +78,19 @@
         data: () => ({
             nots: [],
             flag: false,
-            count: 1,
             last_table: null,
-            focus_card: null
+            focus_card: null,
+            style: 'Default style'
         }),
         methods: {
+            set_style(style) {
+                if (style === this.style) {
+                    return;
+                }
+                this.style = style;
+                localStorage.nots_app_style_schema = style;
+
+            },
             save_local(items, category_name) {
                 for (let i = 0; i++; i < this.nots.length) {
                     if (this.nots[i].category_name === category_name) {
@@ -78,8 +99,16 @@
                 }
                 localStorage.nots_app = JSON.stringify(this.nots);
             },
+            generate_int() {
+                let min = 1;
+                let max = 100;
+                let random = 1;
+                do {
+                    random = Math.floor(Math.random() * (+max - +min)) + +min
+                } while (this.tablesHeadersArray().includes('Board#' + random));
+                return random
+            },
             add_category(name) {
-                this.count++;
                 this.nots.push({category_name: name, items: [], new_name: name});
                 localStorage.nots_app = JSON.stringify(this.nots);
                 this.save_opened_table(name)
@@ -95,9 +124,15 @@
                 localStorage.nots_app = JSON.stringify(this.nots);
             },
             save_name(old_name, new_name) {
+                if ((new_name === '' || this.tablesHeadersArray().includes(new_name)) && old_name !== new_name) {
+                    this.$snotify.warning('Board name cannot be repeated or empty.');
+                    new_name = old_name;
+                }
+
                 for (let i = 0; i < this.nots.length; i++) {
                     if (this.nots[i].category_name === old_name) {
                         this.nots[i].category_name = new_name;
+                        this.nots[i].new_name = this.nots[i].category_name;
                     }
                 }
                 localStorage.nots_app = JSON.stringify(this.nots);
@@ -105,6 +140,15 @@
             save_opened_table(category_name) {
                 this.last_table = category_name;
                 localStorage.nots_app_last_table = category_name;
+            },
+
+            tablesHeadersArray() {
+                let nots = JSON.parse(localStorage.getItem('nots_app'));
+                let category = [];
+                nots.forEach((item) => {
+                    category.push(item.category_name)
+                });
+                return category;
             },
         },
         created() {
@@ -118,7 +162,12 @@
                 } else if (localStorage.getItem('nots_app_last_table')) {
                     this.last_table = localStorage.getItem('nots_app_last_table')
                 }
+
+                if (localStorage.getItem('nots_app_style_schema')) {
+                    this.style = localStorage.getItem('nots_app_style_schema')
+                }
             }
+
         },
         computed: {
             sortedNots: function () {
@@ -128,7 +177,8 @@
                     return result ? -1 : 1;
                 });
                 return tmp_list;
-            }
+            },
+
         }
     }
 </script>

@@ -9,8 +9,10 @@ require('../src/css/hse.css');
 const routes = [
     {
         path: "/",
-        component: indexView,
-        name: "indexPage",
+        component: dashboardView,
+        name: "dashboardPage",
+        // component: indexView,
+        // name: "indexPage",
         meta: {}
     },
     {

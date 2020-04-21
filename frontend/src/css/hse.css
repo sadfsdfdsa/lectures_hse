@@ -132,3 +132,8 @@ textarea {
     -webkit-transform: translateX(-7px);
     transform: translateX(-7px);
 }
+
+.primary {
+        background-color: cornflowerblue;
+
+}

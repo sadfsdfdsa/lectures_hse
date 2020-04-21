@@ -2,7 +2,7 @@
     <b-container class="text-center">
         <b-row>
             <b-col>
-                <b-img :src="images.first" lazy fluid ></b-img>
+                <b-img :src="images.first" style="border: none;" thumbnail lazy fluid></b-img>
             </b-col>
         </b-row>
         <b-row>
