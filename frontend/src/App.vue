@@ -17,6 +17,10 @@
         background: #1e88e5;
     }
 
+    .btn-warning:not(:disabled):not(.disabled) {
+        background: #ffc107;
+    }
+
     // Bootstrap and its default variables
     @import '../node_modules/bootstrap/scss/bootstrap';
     // BootstrapVue and its default variables

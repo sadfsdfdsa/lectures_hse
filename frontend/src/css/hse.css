@@ -133,7 +133,6 @@ textarea {
     transform: translateX(-7px);
 }
 
-.primary {
-        background-color: cornflowerblue;
-
+.bg-grey {
+    background-color: #6c757d;
 }

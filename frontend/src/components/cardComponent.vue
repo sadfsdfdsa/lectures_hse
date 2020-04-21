@@ -2,22 +2,27 @@
     <b-card
             :bg-variant="style_schema==='Default style'?variant_self:'white'"
             :border-variant="variant_self"
-            :header-bg-variant="variant_self"
-            header-text-variant="white"
+            :header-text-variant="style_schema!=='Default style'?variant_self:'white'"
             align="center"
             footer-tag="footer"
             :id="header_self"
+            style="border-radius: 20px;"
+            class="shadow shadow-sm mb-4"
     >
+        <!--            :header-bg-variant="variant_self"
+        header-text-variant="white"
+-->
         <b-card-text>
             <b-tooltip :show.sync="show" :target="header_self" placement="top" v-if="active">
                 This note was in link!
             </b-tooltip>
-            <b-row style="max-height: 25px;">
+            <b-row style="max-height: 25px;" col-sm->
                 <b-col class="text-left ml-2">
                     <b-input v-model="header_self" placeholder="Header" spellcheck="false"
                              :class="style_schema_string_bg_text_color"
                              style="border: none; box-shadow: none; font-size: 120%"
-                             size="sm" @change='change_item'></b-input>
+                             size="sm" @change='change_item'
+                             :disabled="disabled !== false"></b-input>
                     <!--<p :class="'bg-'+variant_self+(variant_self==='warning'?' text-black':' text-white')"-->
                     <!--style="font-size: 120%">{{header_self}}</p>-->
                 </b-col>
@@ -30,6 +35,7 @@
                                     :class="style_schema_string_bg_text_color"
                                     style="border: none; box-shadow: none; resize: none; overflow: auto"
                                     size="sm" @change='change_item' max-rows="60"
+                                    :disabled="disabled !== false"
                         ></b-textarea>
                     </b-form-group>
                 </b-col>
@@ -57,40 +63,46 @@
                     <em>{{deadlineLeft.hours}} hours {{deadlineLeft.minutes}} minutes left</em>
                 </b-col>
                 <b-col class="text-right  mt-2" style="font-size: 80%" v-else>
-                    <em><strong>Deadline end</strong></em>
+                    <em><strong>Deadline passed</strong></em>
                 </b-col>
             </b-row>
         </b-card-text>
         <template v-slot:header>
-            <b-row style="max-height: 20px" cols-sm="6" no-gutters>
-                <b-col class="text-left">
-                    <b-button :variant="variant_self" pill @click="onClickButton" class="active mr-5">
+            <b-row v-if="disabled === false" style="max-height: 30px" cols-sm="4" cols="6" no-gutters align-v="start">
+                <b-col class="text-left" sm="7">
+                    <b-button :variant="variant_self" pill @click="onClickButton" class="mr-5 shadow shadow-sm">
                         ×
                     </b-button>
                 </b-col>
-                <b-col class="text-right">
+                <b-col class="text-right" sm="1">
                     <b-button variant="danger" pill size="sm" @click="change_variant('danger')">&emsp;
                     </b-button>
                 </b-col>
-                <b-col class="text-right">
+                <b-col class="text-right" sm="1">
                     <b-button variant="warning" pill size="sm"
                               @click="change_variant('warning')">&emsp;
                     </b-button>
                 </b-col>
-                <b-col class="text-right">
+                <b-col class="text-right" sm="1">
                     <b-button variant="primary" pill size="sm"
                               @click="change_variant('primary')">&emsp;
                     </b-button>
                 </b-col>
-                <b-col class="text-right">
+                <b-col class="text-right" sm="1">
                     <b-button variant="success" pill size="sm"
                               @click="change_variant('success')">&emsp;
                     </b-button>
                 </b-col>
-                <b-col class="text-right">
+                <b-col class="text-right" sm="1">
                     <b-button variant="secondary" pill size="sm"
                               @click="change_variant('secondary')">&emsp;
                     </b-button>
+                </b-col>
+            </b-row>
+            <b-row v-else style="max-height: 30px" no-gutters align-v="center">
+                <b-col class="text-left">{{item.board_name}}</b-col>
+                <b-col class="text-right" self><a class="rounded-pill btn-sm btn-primary"
+                                                  :href="'?board='+item.board_name+'&note='+item.header">Go to note</a>
                 </b-col>
             </b-row>
         </template>
@@ -100,7 +112,7 @@
 <script>
     export default {
         name: "cardComponent",
-        props: ['item', 'active', 'category_name', 'style_schema'],
+        props: ['item', 'active', 'category_name', 'style_schema', 'disabled'],
         data: () => ({
             text_self: '',
             variant_self: 'secondary',
@@ -113,6 +125,9 @@
                 this.$emit('delete_component', this.tmp)
             },
             change_item() {
+                if (this.disabled) {
+                    return;
+                }
                 if (this.headersArray().includes(this.header_self) && this.header_self !== '' && this.header_self !== this.tmp.header) {
                     this.$snotify.warning('Headers cannot be repeated or empty.');
                     this.header_self = this.tmp.header;
@@ -127,9 +142,6 @@
                 this.variant_self = variant;
                 this.change_item();
             },
-            // link_to_note(value) {
-            //     return value.includes('localhost') || value.includes('hse-onlecture') ? '_parent' : '_blank';
-            // },
             add_null(value, limit = 10) {
                 if (value < limit) {
                     return '0' + value
@@ -163,7 +175,7 @@
                 if (this.style_schema === 'Default style') {
                     return 'bg-' + this.variant_self + (this.variant_self === 'warning' ? ' text-black' : ' text-white')
                 } else {
-                    return ''
+                    return 'bg-white'
                 }
             },
 

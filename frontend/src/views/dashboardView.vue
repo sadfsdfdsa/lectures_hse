@@ -1,11 +1,31 @@
 <template>
     <div>
-        <Navigation sub_header="Dashboard." link_path="/" link_name="Home."
+        <Navigation sub_header="Dashboard." link_path="/blog" link_name="Blog."
                     notification="Информация об обновлении в блоге" variant="success"
                     show_once="true"
         ></Navigation>
         <b-container class="body_for_footer">
             <b-tabs content-class="mt-3" no-fade>
+                <b-tab lazy v-if="sortedNots.length>0"
+                       @click="save_opened_table('calendar board')"
+                       :active="'calendar board'===this.last_table?'active':null">
+                    <template v-slot:title>
+                        <b-form-datepicker
+                                v-model="calendar_board_date"
+                                button-only
+                                locale="en-US"
+                                aria-controls="example-input"
+                                button-variant
+                                value-as-date
+                                class="bg-light"
+                                right
+                                size="md"
+                        ></b-form-datepicker>
+                    </template>
+                    <category-view :category_name="'calendar board'" :items="[]" :disabled="calendar_board_date"
+                                   :style_schema="style"
+                    ></category-view>
+                </b-tab>
                 <div v-for="item in sortedNots" v-bind:key="item.category_name">
                     <b-tab lazy @click="save_opened_table(item.category_name)"
                            :active="item.category_name===last_table?'active':null">
@@ -26,24 +46,27 @@
                             </b-input-group>
                         </template>
                         <category-view :category_name="item.category_name" :items="item.items" :active_card="focus_card"
-                                       :style_schema="style"
+                                       :style_schema="style" :disabled="false"
                                        @re_save="save_local"></category-view>
                     </b-tab>
                 </div>
-                <template v-slot:tabs-start>
-                    <b-button-group size="sm" v-if="sortedNots.length>0">
-                        <b-button :class="(style==='Default style'?'active':'')" variant="outline-primary"
-                                  @click="set_style('Default style')">Default style
-                        </b-button>
-                        <b-button :class="style==='Outline style'?'active':''" variant="outline-primary"
-                                  @click="set_style('Outline style')">
-                            Outline style
-                            <span class="badge badge-success mt-1" style="vertical-align: top">New</span>
-                        </b-button>
-                    </b-button-group>
+                <template v-slot:tabs-start v-if="sortedNots.length>0" class="ml-2 ">
+                    <b-row align-v="center">
+                        <b-col>
+                            <b-button-group size="sm">
+                                <b-button :class="(style==='Default style'?'active':'')" variant="outline-primary" pill
+                                          @click="set_style('Default style')">Style 1
+                                </b-button>
+                                <b-button :class="style==='Outline style'?'active':''" variant="outline-primary" pill
+                                          @click="set_style('Outline style')">
+                                    Style 2
+                                </b-button>
+                            </b-button-group>
+                        </b-col>
+                    </b-row>
                 </template>
                 <template v-slot:tabs-end>
-                    <b-nav-item @click="add_category('Board#'+generate_int()+'(editable)')"><b>+</b>
+                    <b-nav-item @click="add_category('Board'+generate_int()+'(editable)')"><b>+</b>
                     </b-nav-item>
                 </template>
             </b-tabs>
@@ -80,7 +103,8 @@
             flag: false,
             last_table: null,
             focus_card: null,
-            style: 'Default style'
+            style: 'Default style',
+            calendar_board_date: new Date()
         }),
         methods: {
             set_style(style) {
@@ -135,6 +159,7 @@
                         this.nots[i].new_name = this.nots[i].category_name;
                     }
                 }
+                this.save_opened_table(new_name)
                 localStorage.nots_app = JSON.stringify(this.nots);
             },
             save_opened_table(category_name) {
@@ -150,6 +175,7 @@
                 });
                 return category;
             },
+
         },
         created() {
             if (localStorage.getItem('nots_app')) {
