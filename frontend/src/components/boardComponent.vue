@@ -3,16 +3,17 @@
         <b-row align-v="center">
             <b-col>
                 <b-row>
+                    <!--input-->
                     <b-col sm="6" md="6" lg="3" class="text-left" v-if="!this.disabled">
                         <b-card class="shadow shadow-sm mb-4"
-                                :border-variant="input.variant"
+                                :border-variant="card_model.variant"
                                 align="center"
                                 footer-tag="footer"
                                 style="border-radius: 20px">
                             <b-card-text>
                                 <b-row style="max-height: 25px;">
                                     <b-col sm="10">
-                                        <b-input v-model="input.header" placeholder="Enter header" :ref="category_name"
+                                        <b-input v-model="card_model.header" placeholder="Enter header"
                                                  style="border: none; box-shadow: none; font-size: 120%"
                                                  size="sm" :tabindex="1"></b-input>
                                     </b-col>
@@ -20,11 +21,12 @@
                                 <hr>
                                 <b-row>
                                     <b-col>
-                                        <b-textarea v-model="input.body"
+                                        <b-textarea v-model="card_model.body"
                                                     placeholder="Enter body text (or paste link to auto-detect)"
                                                     style="border: none; box-shadow: none; resize: none; overflow:auto"
                                                     size="sm" max-rows="60"
-                                                    :formatter="formatter" :tabindex="2"></b-textarea>
+                                                    :formatter="link_detect"
+                                                    :tabindex="2"></b-textarea>
                                     </b-col>
                                 </b-row>
                                 <hr>
@@ -32,7 +34,7 @@
                                     <b-col>
                                         <b-form inline>
                                             <b-form-datepicker
-                                                    v-model="tmp_deadline_date"
+                                                    v-model="input_extra.deadline_date"
                                                     button-only
                                                     locale="en-US"
                                                     aria-controls="example-input"
@@ -42,7 +44,7 @@
                                             ></b-form-datepicker>
                                             <b-form-timepicker
                                                     dropup
-                                                    v-model="tmp_deadline_time"
+                                                    v-model="input_extra.deadline_time"
                                                     button-only reset-button :reset-value="null"
                                                     aria-controls="example-input" no-close-button button-variant
                                             ></b-form-timepicker>
@@ -50,7 +52,7 @@
                                     </b-col>
                                     <b-col v-if="deadlineDate" sm="5" class="text-left">
                                         {{deadlineDateString}}
-                                        <b-form-checkbox v-model="notification_flag"><em>Notification</em>
+                                        <b-form-checkbox v-model="input_extra.notification_flag"><em>Notification</em>
                                         </b-form-checkbox>
                                     </b-col>
                                 </b-row>
@@ -66,7 +68,7 @@
                                                 <b-form>
                                                     <b-form-input
                                                             id="input-1"
-                                                            v-model="tmp_link_name"
+                                                            v-model="input_extra.link_short_name"
                                                             type="text"
                                                             required
                                                             size="md"
@@ -75,15 +77,15 @@
                                                     <b-form-input
                                                             class="mt-3"
                                                             id="input-2"
-                                                            v-model="tmp_link_value"
+                                                            v-model="input_extra.link_value"
                                                             type="text"
                                                             required
                                                             placeholder="Link value: http://vk.com for example"
                                                     ></b-form-input>
                                                     <hr>
                                                     <p>Or select a notification from another board</p>
-                                                    <b-form-select v-model="tmp_link_note"
-                                                                   :options="headersItems"></b-form-select>
+                                                    <b-form-select v-model="input_extra.link_note"
+                                                                   :options="notesLinks"></b-form-select>
                                                     <hr>
                                                     <b-button size="md" class="mt-3 btn-hse btn-white" pill
                                                               @click="add_link">
@@ -93,7 +95,7 @@
                                             </div>
                                         </b-modal>
                                     </b-col>
-                                    <div v-for="(link, index) in input.links" v-bind:key="index">
+                                    <div v-for="(link, index) in card_model.links" v-bind:key="index">
                                         <b-button @click="delete_link(index)" pill size="sm" variant="outline-primary">
                                             {{link.name}}
                                         </b-button>
@@ -101,51 +103,61 @@
                                 </b-row>
                             </b-card-text>
                             <template v-slot:header>
-                                <b-row style="max-height: 15px;" aligh-h="end" no-gutters>
-                                    <b-col class="text-left">
+                                <b-row style="max-height: 20px;" aligh-h="end" no-gutters cols="12">
+                                    <b-col class="text-left" cols="5">
                                         New note form
+                                    </b-col>
+                                    <b-col mb="3" v-if="notesTemplates.length>1">
+                                        <b-form-select size="sm" class="btn-sm rounded-pill" :options="notesTemplates"
+                                                       v-model="active_template">
+                                        </b-form-select>
                                     </b-col>
                                     <b-col class="text-right">
                                         <b-button variant="secondary" pill size="lg"
-                                                  @click="create" class="active" :tabindex="3">+
+                                                  @click="create_item" class="active" :tabindex="3">+
                                         </b-button>
                                     </b-col>
                                 </b-row>
                             </template>
                         </b-card>
                     </b-col>
-                    <b-col sm="6" md="6" lg="3" class="text-left" v-for="item in sortedItems" v-bind:key="item.header">
+                    <!--/input-->
+                    <!--cards-->
+                    <b-col sm="6" md="6" lg="3" class="text-left" v-for="(item, index) in sortedItems"
+                           v-bind:key="index">
                         <card-component :item="item" :active="active_card===item.header"
-                                        :category_name="category_name"
-                                        @delete_component="delete_item"
-                                        @change_item="change_variant"
+                                        :board_name="board_name"
+                                        @delete_item="delete_item"
+                                        @change_item="change_item"
                                         :style_schema="style_schema"
                                         :disabled="disabled"
+                                        :index="index"
                         ></card-component>
                     </b-col>
+                    <!--/cards-->
                 </b-row>
             </b-col>
         </b-row>
         <b-row>
             <b-col>
-                <Empty v-if="sortedItems.length===0 && !this.disabled" header="Create new note!"></Empty>
-                <Empty v-if="sortedItems.length===0 && this.disabled!==false"
-                       header="There are no notes on this day!"></Empty>
+                <Empty v-if="items.length===0 && !this.disabled" header="Create new note!"></Empty>
+                <Empty v-if="items.length===0 && this.disabled!==false"
+                       header="There is nothing here!"></Empty>
             </b-col>
         </b-row>
     </div>
 </template>
 
 <script>
-    import CardComponent from "../components/cardComponent";
-    import Empty from "../components/Empty";
+    import CardComponent from "./cardComponent";
+    import Empty from "./Empty";
 
     export default {
-        name: "categoryView",
+        name: "categoryComponent",
         components: {Empty, CardComponent},
-        props: ['category_name', 'items', 'active_card', 'style_schema', 'disabled'],
+        props: ['board_name', 'items', 'active_card', 'style_schema', 'disabled', 'templates'],
         data: () => ({
-            input: {
+            card_model: {
                 header: '',
                 body: '',
                 footer: '',
@@ -153,93 +165,77 @@
                 date: null,
                 links: [] // link = {name: string, value: string}
             },
-            tmp_link_value: '',
-            tmp_link_name: '',
-            tmp_link_note: '',
-            tmp_deadline_time: null,
-            tmp_deadline_date: null,
-            notification_flag: false,
-            show_buttons_flag: false,
-            card: [],
+            input_extra: {
+                link_value: '',
+                link_short_name: '',
+                link_note: '',
+                deadline_time: null,
+                deadline_date: null,
+                notification_flag: false,
+            },
+            active_template: null
         }),
         methods: {
-            delete_link(index) {
-                this.$delete(this.input.links, index)
-            },
-            add_link() {
-                if (this.tmp_link_note) {
-                    let tmp = this.tmp_link_note.split(': ');
-                    this.input.links.push({name: tmp[1], value: '/dashboard?board=' + tmp[0] + '&note=' + tmp[1]});
-                } else {
-                    this.input.links.push({name: this.tmp_link_name, value: this.tmp_link_value});
-                }
-                this.$refs['modal-1'].hide();
-                this.tmp_link_value = '';
-                this.tmp_link_name = '';
-                this.tmp_link_note = ''
-            },
-            create() {
-                if (this.input.header === '' || this.headersArray.includes(this.input.header)) {
-                    this.$snotify.warning('Headers cannot be repeated or empty.');
-                    return;
-                }
-                if (this.deadlineDate !== null) {
-                    this.input.date = new Date(this.deadlineDate.getTime());
-                    if (this.notification_flag) {
-                        this.set_notification(this.input.header)
-                    }
-                }
-                this.card.push(this.input);
-                this.input = {
+            unset_inputs() {
+                this.card_model = {
                     header: '',
                     body: '',
                     footer: '',
                     variant: 'secondary',
                     date: null,
-                    links: []
+                    links: [] // link = {name: string, value: string}
                 };
-                this.tmp_deadline_time = null;
-                this.tmp_deadline_date = null;
-                this.notification_flag = false;
-                this.save_in_browser();
-                this.$refs[this.category_name].focus();
-            },
-            set_notification(header) {
-                if (Notification.permission === "granted")
-                    setTimeout(() => {
-                        let board = this.category_name;
-                        let tmp = new Notification(
-                            this.category_name + ': ' + header
-                        );
-                        tmp.onclick = function () {
-                            window.open('?board=' + board + '&note=' + header);
-                        }
-                    }, this.deadlineDate.getTime() - new Date().getTime());
-                else {
-                    Notification.requestPermission().then(this.set_notification(header));
+                this.input_extra = {
+                    link_value: '',
+                    link_short_name: '',
+                    link_note: '',
+                    deadline_time: null,
+                    deadline_date: null,
+                    notification_flag: false,
                 }
+            },
+
+            // emits to parent
+            change_item(index, item) {
+                this.$emit('change_item', this.board_name, this.items.indexOf(item), item)
             },
             delete_item(item) {
-                this.$delete(this.card, this.card.indexOf(item));
-                this.save_in_browser()
+                this.$emit('delete_item', this.board_name, this.items.indexOf(item))
             },
-            change_variant(variant, text, header, item) {
-                if (this.headersArray.includes(header) && header !== item.header && header !== '') {
-                    this.$snotify.warning('Headers cannot be repeated or empty.');
-                    return;
+            create_item() {
+                if (this.card_model.header === '' || this.boardCardHeadersArray.includes(this.card_model.header)) {
+                    this.$snotify.warning('Headers cannot be empty or repeated.')
+                } else {
+                    this.card_model.date = this.input_extra.deadline_date;
+                    this.$emit('create_item', this.board_name, this.card_model, {notification_flag: this.notification_flag});
+                    this.unset_inputs()
                 }
-                let index = this.card.indexOf(item);
-
-                this.card[index].body = text;
-                this.card[index].variant = variant;
-                this.card[index].header = header;
-
-                this.save_in_browser()
             },
-            save_in_browser() {
-                this.$emit('re_save', this.card, this.category_name)
+
+            add_link() {
+                if (this.input_extra.link_note) {
+                    let tmp = this.input_extra.link_note.split(': ');
+                    this.card_model.links.push({name: tmp[1], value: '?board=' + tmp[0] + '&note=' + tmp[1]});
+                } else {
+                    if (this.input_extra.link_short_name === '' || this.input_extra.link_value === '') {
+                        this.$snotify.warning('Short name and value cannot be empty');
+                        return;
+                    }
+                    this.card_model.links.push({
+                        name: this.input_extra.link_short_name,
+                        value: this.input_extra.link_value
+                    });
+                }
+                this.$refs['modal-1'].hide();
+                this.input_extra.link_short_name = '';
+                this.input_extra.link_value = '';
+                this.input_extra.link_note = ''
             },
-            detect_link(value) {
+            delete_link(index) {
+                this.$delete(this.card_model.links, index)
+            },
+
+            link_detect(value) {
                 // eslint-disable-next-line
                 let urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
                 let tmp = '';
@@ -247,20 +243,18 @@
                     tmp = url;
                     return ''
                 });
-                this.tmp_link_value = tmp;
-                if (!this.linkExists(tmp) && tmp !== '') {
-                    this.tmp_link_name = tmp.split('/')[2];
+                this.input_extra.link_value = tmp;
+                if (!this.link_exists(tmp) && tmp !== '') {
+                    this.input_extra.link_short_name = tmp.split('/')[2];
                     this.add_link();
                 }
                 return value;
             },
-            formatter(value) {
-                return this.detect_link(value)
-            },
-            linkExists(value) {
-                for (let i = 0; i < this.input.links.length; i++) {
-                    if (this.input.links[i].value === value) {
-                        return true
+
+            link_exists(link_value) {
+                for (let i = 0; i < this.card_model.links.length; i++) {
+                    if (this.card_model.links[i].value === link_value) {
+                        return true;
                     }
                 }
                 return false;
@@ -271,88 +265,75 @@
                 }
                 return value.toString()
             },
-
-        },
-        created() {
-            if (this.disabled) {
-                this.card = this.get_notes_for_date;
-            } else {
-                this.card = this.items;
-            }
         },
         computed: {
+            notesLinks: function () {
+                let boards = JSON.parse(localStorage.getItem(this.$store.state.localstorage_variables.boards));
+                let tmp = [];
+                this.items.forEach((item) => {
+                    tmp.push(this.board_name + ': ' + item.header)
+                });
+                boards.forEach((board) => {
+                    board.items.forEach((item) => {
+                        if (board.board_name !== this.board_name) {
+                            tmp.push(board.board_name + ': ' + item.header)
+                        }
+                    })
+                });
+                return tmp;
+            },
+            notesTemplates: function () {
+                let tmp = [];
+                tmp.push({value: null, text: 'Template'});
+
+                if (this.templates !== null) {
+                    this.templates.forEach((template) => {
+                        tmp.push({text: template.header, value: template})
+                    });
+                }
+                return tmp;
+            },
             sortedItems: function () {
                 let tmp = ['secondary', 'success', 'primary', 'warning', 'danger'];
-                let tmp_list = this.card;
+                let tmp_list = this.items;
                 tmp_list.sort(function (a, b) {
                     let result = tmp.indexOf(a.variant) > tmp.indexOf(b.variant);
                     return result ? -1 : 1;
                 });
                 return tmp_list;
             },
-            headersItems: function () {
-                let nots = JSON.parse(localStorage.getItem('nots_app'));
+            boardCardHeadersArray: function () {
                 let tmp = [];
-                nots.forEach((item) => {
-                    item.items.forEach((note) => {
-                        tmp.push(item.category_name + ': ' + note.header)
-                    })
-                });
-                return tmp;
-            },
-            headersArray: function () {
-                let nots = JSON.parse(localStorage.getItem('nots_app'));
-                let category = [];
-                nots.forEach((item) => {
-                    if (item.category_name === this.category_name) {
-                        category = item;
-                        return;
-                    }
-                });
-                let tmp = [];
-                category.items.forEach((item) => {
+                this.items.forEach((item) => {
                     tmp.push(item.header)
                 });
                 return tmp;
             },
+
             deadlineDate: function () {
-                if (!this.tmp_deadline_date && !this.tmp_deadline_time) {
+                if (!this.input_extra.deadline_date && !this.input_extra.deadline_time) {
                     return null
                 }
-                if (!this.tmp_deadline_time) {
+                if (!this.input_extra.deadline_time) {
                     // eslint-disable-next-line
-                    this.tmp_deadline_time = '00:00';
+                    this.input_extra.deadline_time = '00:00';
                 }
-                if (!this.tmp_deadline_date) {
+                if (!this.input_extra.deadline_date) {
                     // eslint-disable-next-line
-                    this.tmp_deadline_date = new Date();
+                    this.input_extra.deadline_date = new Date();
                 }
-                this.tmp_deadline_date.setHours(parseInt(this.tmp_deadline_time.split(':')[0]));
-                this.tmp_deadline_date.setMinutes(parseInt(this.tmp_deadline_time.split(':')[1]));
-                return this.tmp_deadline_date
+                this.input_extra.deadline_date.setHours(parseInt(this.input_extra.deadline_time.split(':')[0]));
+                this.input_extra.deadline_date.setMinutes(parseInt(this.input_extra.deadline_time.split(':')[1]));
+                return this.input_extra.deadline_date
             },
             deadlineDateString: function () {
                 let tmp = this.deadlineDate;
                 return this.add_null(tmp.getDate(), 10) + '.' + this.add_null((tmp.getMonth() + 1), 10) + '.' + tmp.getFullYear() + ' ' + this.add_null(tmp.getHours(), 10) + ':' + this.add_null(tmp.getMinutes(), 10)
             },
-            get_notes_for_date: function () {
-                let nots = JSON.parse(localStorage.getItem('nots_app'));
-                let category = [];
-                nots.forEach((item) => {
-                    item.items.forEach((note) => {
-                        let tmp = new Date(note.date);
-                        if (tmp.getMonth() === this.disabled.getMonth() && tmp.getDate() === this.disabled.getDate() && tmp.getFullYear() === this.disabled.getFullYear()) {
-                            note.board_name = item.category_name;
-                            category.push(note)
-                        }
-                    })
-                });
-                return category;
-            }
         },
         watch: {
-            disabled: function () {
-                this.card = this.get_notes_for_date
+            active_template: function (val) {
+                this.card_model = Object.assign({}, val);
             }
         }
     }

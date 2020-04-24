@@ -13,8 +13,19 @@
     @import "~vue-snotify/styles/material.css";
     // Your variable overrides
     $primary: #6495ed;
+
+    $danger: #FF6347;
+    $warning: #F0E68C; // FFD700
+    $success: #90EE90;
+    $secondary: #A9A9A9;
+
+
     .btn-primary:not(:disabled):not(.disabled) {
         background: #1e88e5;
+    }
+
+    .btn-primary:not(:active):not(.active) {
+        background: #6495ed;
     }
 
     .btn-warning:not(:disabled):not(.disabled) {

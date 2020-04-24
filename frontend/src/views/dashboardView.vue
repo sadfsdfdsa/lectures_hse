@@ -1,17 +1,18 @@
 <template>
     <div>
         <Navigation sub_header="Dashboard." link_path="/blog" link_name="Blog."
-                    notification="Информация об обновлении в блоге" variant="success"
-                    show_once="true"
         ></Navigation>
+        <!--                    notification="Информация об обновлении в блоге" variant="success"
+                    show_once="true"-->
         <b-container class="body_for_footer" fluid>
             <b-tabs content-class="mt-3" no-fade>
-                <b-tab lazy v-if="sortedNots.length>0"
-                       @click="save_opened_table('calendar board')"
-                       :active="'calendar board'===this.last_table?'active':null">
+                <!--special boards-->
+                <!--calendar-->
+                <b-tab lazy @click="utils_set_active_board(special_boards.calendar)"
+                       :active="active_board===special_boards.calendar">
                     <template v-slot:title>
                         <b-form-datepicker
-                                v-model="calendar_board_date"
+                                v-model="calendar_board_date_value"
                                 button-only
                                 locale="en-US"
                                 aria-controls="example-input"
@@ -22,64 +23,126 @@
                                 size="md"
                         ></b-form-datepicker>
                     </template>
-                    <category-view :category_name="'calendar board'" :items="[]" :disabled="calendar_board_date"
-                                   :style_schema="style"
-                    ></category-view>
+                    <category-component :board_name="special_boards.calendar"
+                                        :disabled="true"
+                                        :items="dateCardsArray"
+                                        :style_schema="style_schema"
+                                        @create_item="create_card"
+                                        @delete_item="delete_card"
+                                        @change_item="change_card"
+                    ></category-component>
                 </b-tab>
-                <div v-for="item in sortedNots" v-bind:key="item.category_name">
-                    <b-tab lazy @click="save_opened_table(item.category_name)"
-                           :active="item.category_name===last_table?'active':null">
+                <!--templates-->
+                <b-tab lazy @click="utils_set_active_board(special_boards.templates)"
+                       :active="active_board===special_boards.templates">
+                    <template v-slot:title>
+                        <b-row cols="3" cols-sm="3" no-gutters align-v="center">
+                            <b-col>
+                                <div class="mr-1 btn-success btn rounded-pill disabled">{{templatesCardsArray.length}}
+                                </div>
+                            </b-col>
+                            <b-col class="ml-1"><h6>Templates</h6></b-col>
+                        </b-row>
+                    </template>
+                    <category-component :board_name="special_boards.templates"
+                                        :disabled="false"
+                                        :templates="templatesCardsArray"
+                                        :items="templatesCardsArray"
+                                        :style_schema="style_schema"
+                                        @create_item="create_card"
+                                        @delete_item="delete_card"
+                                        @change_item="change_card"
+                    ></category-component>
+                </b-tab>
+                <!--everyday-->
+                <b-tab lazy @click="utils_set_active_board(special_boards.everyday)"
+                       :active="active_board===special_boards.everyday">
+                    <template v-slot:title>
+                        <b-row cols="3" cols-sm="3" no-gutters align-v="center">
+                            <b-col>
+                                <div class="mr-1 btn-success btn rounded-pill disabled">{{everydayCardsArray.length}}
+                                </div>
+                            </b-col>
+                            <b-col class="ml-1"><h6>Everyday</h6></b-col>
+                        </b-row>
+                    </template>
+                    <category-component :board_name="special_boards.everyday"
+                                        :disabled="false"
+                                        :items="everydayCardsArray"
+                                        :templates="templatesCardsArray"
+                                        :style_schema="style_schema"
+                                        @create_item="create_card"
+                                        @delete_item="delete_card"
+                                        @change_item="change_card"
+                    ></category-component>
+                </b-tab>
+                <!--/special boards-->
+
+                <!--common boards-->
+                <div v-for="item in sortedBoardsArray" v-bind:key="item.board_name">
+                    <b-tab lazy @click="utils_set_active_board(item.board_name)"
+                           :active="active_board===item.board_name">
                         <template v-slot:title>
                             <b-input-group>
-                                <b-form-input v-model="item.new_name" spellcheck="false"
-                                              @change="save_name(item.category_name, item.new_name)"
-                                              style="border: none; box-shadow: none;   color: transparent; text-shadow: 0 0 0 black;">
+                                <b-form-input
+                                        spellcheck="false" v-model="item.tmp_name"
+                                        @change="change_name_board(item.tmp_name, item.board_name)"
+                                        style="border: none; box-shadow: none; color: transparent; text-shadow: 0 0 0 black;">
                                 </b-form-input>
                                 <template v-slot:prepend>
                                     <div class="mr-1 btn-primary btn rounded-pill disabled">{{item.items.length}}</div>
                                 </template>
                                 <b-input-group-append class="ml-1">
                                     <b-button pill variant="outline-danger" class="ml-1"
-                                              @click="delete_category(item.new_name)">×
+                                              @click="delete_board(item.board_name)"
+                                    >×
                                     </b-button>
                                 </b-input-group-append>
                             </b-input-group>
                         </template>
-                        <category-view :category_name="item.category_name" :items="item.items" :active_card="focus_card"
-                                       :style_schema="style" :disabled="false"
-                                       @re_save="save_local"></category-view>
+                        <category-component :board_name="item.board_name"
+                                            :disabled="false"
+                                            :items="item.items"
+                                            :templates="templatesCardsArray"
+                                            :style_schema="style_schema"
+                                            :active_card="active_card"
+                                            @create_item="create_card"
+                                            @delete_item="delete_card"
+                                            @change_item="change_card"
+                        ></category-component>
                     </b-tab>
                 </div>
-                <template v-slot:tabs-start v-if="sortedNots.length>0" class="ml-2 ">
+                <!--/common boards-->
+                <template v-slot:tabs-start>
                     <b-row align-v="center">
                         <b-col>
-                            <b-button-group>
-                                <b-button :class="(style==='Default style'?'active':'')" variant="outline-primary"
-                                          @click="set_style('Default style')">Style 1
+                            <b-button-group size="sm">
+                                <b-button :variant="style_schema==='outline_color'?'outline-primary':'primary'"
+                                          @click="set_style(0)"
+                                          style="border-top-left-radius: 20px; border-bottom-left-radius: 20px">⚫
                                 </b-button>
-                                <b-button :class="style==='Outline style'?'active':''" variant="outline-primary"
-                                          @click="set_style('Outline style')">
-                                    Style 2
+                                <b-button :variant="style_schema==='outline_color'?'primary':'outline-primary'"
+                                          @click="set_style(1)"
+                                          style="border-top-right-radius: 20px; border-bottom-right-radius: 20px">⚪
                                 </b-button>
                             </b-button-group>
                         </b-col>
                     </b-row>
                 </template>
                 <template v-slot:tabs-end>
-                    <b-nav-item @click="add_category('Board'+generate_int()+'(editable)')"><b>+</b>
-                    </b-nav-item>
+                    <b-row align-v="center">
+                        <b-col>
+                            <b-nav-item @click="create_board(uniqueBoardName)"
+                            ><h4>+</h4></b-nav-item>
+                        </b-col>
+                    </b-row>
                 </template>
             </b-tabs>
-            <div v-if="nots.length===0">
-                <b-row>
-                    <b-col>
-                        <Empty header="No boards... "></Empty>
-                    </b-col>
-                </b-row>
+            <div v-if="boards.length===0">
                 <b-row class="text-center">
                     <b-col>
                         <b-button class="btn-hse btn-white btn-animation-1" size="lg" variant="primary" pill
-                                  @click="add_category('YourFirstBoard(editable)')">Create new board
+                                  @click="create_board(uniqueBoardName)">Create new board
                         </b-button>
                     </b-col>
                 </b-row>
@@ -90,114 +153,222 @@
 </template>
 
 <script>
+    //['board_name', 'items', 'active_card', 'style_schema', 'disabled']
+
     import Navigation from "../components/Navigation";
     import Footer from "../components/Footer";
-    import CategoryView from "./categoryView";
+
     import Empty from "../components/Empty";
+
+    // todo
+    import CategoryComponent from "../components/boardComponent";
+
 
     export default {
         name: "dashboardView",
-        components: {Empty, CategoryView, Footer, Navigation},
+        components: {Empty, CategoryComponent, Footer, Navigation},
         data: () => ({
-            nots: [],
-            flag: false,
-            last_table: null,
-            focus_card: null,
-            style: 'Default style',
-            calendar_board_date: new Date()
+            boards: [],
+
+            style_schema: '',
+            active_board: null,
+            active_card: null,
+            calendar_board_date_value: new Date(),
+
+            special_boards: {
+                calendar: '',
+                templates: '',
+                everyday: ''
+            },
+            special_boards_values: [],
+
         }),
         methods: {
-            set_style(style) {
-                if (style === this.style) {
-                    return;
-                }
-                this.style = style;
-                localStorage.nots_app_style_schema = style;
-
+            set_style(index) {
+                this.style_schema = this.$store.state.styles[index];
+                localStorage[this.$store.state.localstorage_variables.style_schema] = this.style_schema;
             },
-            save_local(items, category_name) {
-                for (let i = 0; i++; i < this.nots.length) {
-                    if (this.nots[i].category_name === category_name) {
-                        this.nots[i].items = items;
+
+            // create boards
+            create_board(name) {
+                this.boards.push({board_name: name, items: [], tmp_name: name});
+                this.utils_set_active_board(name);
+                this.$store.commit('save_items_local', this.boards)
+            },
+
+            change_name_board(tmp_name_new, board_name_old) {
+                if (!this.boardsHeadersArray.includes(tmp_name_new) || tmp_name_new === '') {
+                    for (let i = 0; i < this.boards.length; i++) {
+                        if (this.boards[i].board_name === board_name_old) {
+                            this.boards[i].board_name = tmp_name_new;
+                            this.utils_set_active_board(tmp_name_new);
+                            this.$store.commit('save_items_local', this.boards);
+                            break;
+                        }
+                    }
+                } else {
+                    this.$snotify.warning('Boards names cannot be empty or repeated');
+                    for (let i = 0; i < this.boards.length; i++) {
+                        if (this.boards[i].board_name === board_name_old) {
+                            this.boards[i].tmp_name = board_name_old;
+                            break;
+                        }
                     }
                 }
-                localStorage.nots_app = JSON.stringify(this.nots);
             },
-            generate_int() {
-                let min = 1;
-                let max = 100;
-                let random = 1;
-                do {
-                    random = Math.floor(Math.random() * (+max - +min)) + +min
-                } while (this.tablesHeadersArray().includes('Board#' + random));
-                return random
-            },
-            add_category(name) {
-                this.nots.push({category_name: name, items: [], new_name: name});
-                localStorage.nots_app = JSON.stringify(this.nots);
-                this.save_opened_table(name)
-            },
-            delete_category(name) {
-                let index = -1;
-                for (let i = 0; i < this.nots.length; i++) {
-                    if (this.nots[i].category_name === name || this.nots[i].new_name === name) {
-                        index = i;
+            delete_board(name) {
+                for (let i = 0; i < this.boards.length; i++) {
+                    if (this.boards[i].board_name === name) {
+                        this.$delete(this.boards, i);
+                        break;
                     }
                 }
-                this.$delete(this.nots, index);
-                localStorage.nots_app = JSON.stringify(this.nots);
+                this.$store.commit('save_items_local', this.boards)
             },
-            save_name(old_name, new_name) {
-                if ((new_name === '' || this.tablesHeadersArray().includes(new_name)) && old_name !== new_name) {
-                    this.$snotify.warning('Board name cannot be repeated or empty.');
-                    new_name = old_name;
-                }
-
-                for (let i = 0; i < this.nots.length; i++) {
-                    if (this.nots[i].category_name === old_name) {
-                        this.nots[i].category_name = new_name;
-                        this.nots[i].new_name = this.nots[i].category_name;
+            // emits from children
+            delete_card(board_name, index) {
+                for (let i = 0; i < this.special_boards_values.length; i++) {
+                    if (this.special_boards_values[i].board_name === board_name) {
+                        this.$delete(this.special_boards_values[i].items, index);
+                        this.$store.commit('save_special_items_local', this.special_boards_values);
+                        return;
                     }
                 }
-                this.save_opened_table(new_name)
-                localStorage.nots_app = JSON.stringify(this.nots);
+                for (let i = 0; i < this.boards.length; i++) {
+                    if (this.boards[i].board_name === board_name) {
+                        this.$delete(this.boards[i].items, index);
+                        this.$store.commit('save_items_local', this.boards);
+                        return;
+                    }
+                }
             },
-            save_opened_table(category_name) {
-                this.last_table = category_name;
-                localStorage.nots_app_last_table = category_name;
+            change_card(board_name, index, item) {
+                for (let i = 0; i < this.special_boards_values.length; i++) {
+                    if (this.special_boards_values[i].board_name === board_name) {
+                        this.special_boards_values[i].items[index] = item;
+                        this.$store.commit('save_special_items_local', this.special_boards_values);
+                        return;
+                    }
+                }
+
+                for (let i = 0; i < this.boards.length; i++) {
+                    if (this.boards[i].board_name === board_name) {
+                        this.boards[i].items[index] = item;
+                        this.$store.commit('save_items_local', this.boards);
+                        return;
+                    }
+                }
+            },
+            create_card(board_name, item, options) {
+                for (let i = 0; i < this.special_boards_values.length; i++) {
+                    if (this.special_boards_values[i].board_name === board_name) {
+                        this.special_boards_values[i].items.push(item);
+                        this.$store.commit('save_special_items_local', this.special_boards_values);
+                        return;
+                    }
+                }
+
+                for (let i = 0; i < this.boards.length; i++) {
+                    if (this.boards[i].board_name === board_name) {
+                        this.boards[i].items.push(item);
+                        if (options.notification_flag === true) {
+                            this.set_notification(item.header, board_name, item.date);
+                        }
+                        this.$store.commit('save_items_local', this.boards);
+                        return;
+                    }
+                }
             },
 
-            tablesHeadersArray() {
-                let nots = JSON.parse(localStorage.getItem('nots_app'));
-                let category = [];
-                nots.forEach((item) => {
-                    category.push(item.category_name)
-                });
-                return category;
+            set_notification(header, board_name, deadline_date) {
+                if (Notification.permission === "granted")
+                    setTimeout(() => {
+                        let board = board_name;
+                        let tmp = new Notification(
+                            board_name + ': ' + header
+                        );
+                        tmp.onclick = function () {
+                            window.open('?board=' + board + '&note=' + header);
+                        }
+                    }, deadline_date.getTime() - new Date().getTime());
+                else {
+                    Notification.requestPermission().then(this.set_notification(header, board_name, deadline_date));
+                }
             },
 
-        },
+
+            // set active board
+            utils_set_active_board(board) {
+                this.active_board = board;
+                this.$store.commit('set_active_board', board)
+            },
+            utils_set_active_card_and_board(board, card) {
+                this.active_card = card;
+                this.$store.commit('set_active_card', card);
+                this.utils_set_active_board(board);
+            },
+
+            // get data from $store
+            utils_init_vars() {
+                this.special_boards = this.$store.state.special_boards;
+            },
+        }
+        ,
         created() {
-            if (localStorage.getItem('nots_app')) {
-                this.nots = JSON.parse(localStorage.getItem('nots_app'));
+            this.utils_init_vars();
+
+            // get from localstorage all info
+            if (localStorage.getItem(this.$store.state.localstorage_variables.boards)) {
+                this.boards = JSON.parse(localStorage.getItem(this.$store.state.localstorage_variables.boards));
+
                 if (this.$route.query.board && this.$route.query.note) {
-                    this.save_opened_table(this.$route.query.board);
-                    this.focus_card = this.$route.query.note;
+                    this.utils_set_active_card_and_board(this.$route.query.board, this.$route.query.note);
                     this.$router.replace({query: {}})
-
-                } else if (localStorage.getItem('nots_app_last_table')) {
-                    this.last_table = localStorage.getItem('nots_app_last_table')
-                }
-
-                if (localStorage.getItem('nots_app_style_schema')) {
-                    this.style = localStorage.getItem('nots_app_style_schema')
+                } else if (localStorage.getItem(this.$store.state.localstorage_variables.active_board)) {
+                    this.active_board = localStorage.getItem(this.$store.state.localstorage_variables.active_board);
                 }
             }
 
-        },
+            // get style_schema from localStorage
+            if (localStorage.getItem(this.$store.state.localstorage_variables.style_schema)) {
+                this.style_schema = localStorage.getItem(this.$store.state.localstorage_variables.style_schema)
+            } else {
+                this.style_schema = this.$store.state.styles[0];
+            }
+
+            // todo
+            if (localStorage.getItem(this.$store.state.localstorage_variables.special_boards)) {
+                this.special_boards_values = JSON.parse(localStorage.getItem(this.$store.state.localstorage_variables.special_boards))
+            } else {
+                localStorage[this.$store.state.localstorage_variables.special_boards] = JSON.stringify([
+                    {board_name: this.special_boards.everyday, tmp_name: this.special_boards.everyday, items: []},
+                    {board_name: this.special_boards.templates, tmp_name: this.special_boards.templates, items: []}
+                ])
+            }
+
+
+        }
+        ,
         computed: {
-            sortedNots: function () {
-                let tmp_list = this.nots;
+            uniqueBoardName: function () {
+                let tmp = 'Board';
+                let i = 1;
+                while (this.boardsHeadersArray.includes(tmp + i)) {
+                    i++;
+                }
+                return tmp + i;
+            },
+
+            boardsHeadersArray: function () {
+                let tmp = [];
+                this.boards.forEach((item) => {
+                    tmp.push(item.board_name)
+                });
+                return tmp;
+            },
+
+            sortedBoardsArray: function () {
+                let tmp_list = this.boards;
                 tmp_list.sort(function (a, b) {
                     let result = a.items.length > b.items.length;
                     return result ? -1 : 1;
@@ -205,6 +376,49 @@
                 return tmp_list;
             },
 
+            // for special boards
+            templatesCardsArray: function () {
+                let tmp = [];
+                this.special_boards_values.forEach((board) => {
+                    if (board.board_name === this.special_boards.templates) {
+                        tmp = board.items;
+                        return;
+                    }
+                });
+                return tmp;
+            },
+            everydayCardsArray: function () {
+                let tmp = [];
+
+                this.special_boards_values.forEach((board) => {
+                    if (board.board_name === this.special_boards.everyday) {
+                        tmp = board.items;
+                        return;
+                    }
+                });
+                return tmp;
+            },
+            dateCardsArray: function () {
+                let output = [];
+                this.boards.forEach((item) => {
+                    item.items.forEach((note) => {
+                        let tmp = new Date(note.date);
+                        if (tmp.getMonth() === this.calendar_board_date_value.getMonth()
+                            && tmp.getDate() === this.calendar_board_date_value.getDate()
+                            && tmp.getFullYear() === this.calendar_board_date_value.getFullYear()) {
+                            note.board_name = item.board_name;
+                            output.push(note)
+                        }
+                    })
+                });
+                let tmp = new Date();
+                if (this.calendar_board_date_value.getFullYear() === tmp.getFullYear() &&
+                    this.calendar_board_date_value.getDate() === tmp.getDate() &&
+                    this.calendar_board_date_value.getMonth() === tmp.getMonth()) {
+                    output = output.concat(this.everydayCardsArray)
+                }
+                return output;
+            }
         }
     }
 </script>

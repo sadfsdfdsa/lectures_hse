@@ -1,5 +1,4 @@
-
-import Snotify, { SnotifyPosition } from "vue-snotify";
+import Snotify, {SnotifyPosition} from "vue-snotify";
 import BootstrapVue from "bootstrap-vue";
 import VueRouter from "vue-router";
 import Vuex from "vuex";
@@ -26,8 +25,47 @@ Vue.use(Snotify, {
 Vue.prototype.$api = api;
 
 const store = new Vuex.Store({
-    state: {},
-    mutations: {}
+    state: {
+        // active: {
+        //     card: null, // string
+        //     board: null, // string
+        // },
+
+        special_boards: {
+            calendar: 'calendar board',
+            templates: 'templates board',
+            everyday: 'everyday board'
+        },
+
+        localstorage_variables: {
+            special_boards: 'dashboard_special_boards',
+            // todo nots_app in production
+            // boards: 'dashboard_boards', // board model: {name: string, items: []}
+            boards: 'nots_app',
+            // active_card: 'dashboard_active_card',
+            active_board: 'dashboard_active_board',
+            style_schema: 'dashboard_style_schema',
+        },
+
+        styles: ['full_color', 'outline_color']
+
+    },
+    mutations: {
+        set_active_card(state, card_header) {
+            state.active_card = card_header;
+            localStorage[state.localstorage_variables.active_card] = card_header;
+        },
+        set_active_board(state, board_header) {
+            state.active_board = board_header;
+            localStorage[state.localstorage_variables.active_board] = board_header;
+        },
+        save_items_local(state, items) {
+            localStorage[state.localstorage_variables.boards] = JSON.stringify(items)
+        },
+        save_special_items_local(state, items) {
+            localStorage[state.localstorage_variables.special_boards] = JSON.stringify(items)
+        }
+    }
 });
 
 const router = new VueRouter({
