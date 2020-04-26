@@ -89,7 +89,7 @@
                                                    reset-button
                                                    value-as-date
                                 ></b-form-timepicker>
-                                <b-form-datepicker v-model="new_date"
+                                <b-form-datepicker v-model="new_date" v-if="this.board_name!=='everyday board'"
                                                    locale="en-US"
                                                    aria-controls="example-input"
                                                    reset-button
@@ -174,18 +174,27 @@
             },
 
             change_date(header, remove) {
-                this.$bvModal.hide(header);
                 if (remove) {
                     this.change_item(null, 'date');
+                    this.$bvModal.hide(header);
                     return;
                 }
-                if (this.new_date === null || this.new_time === null) {
+                if (this.new_date === null && this.new_time === null) {
+                    this.$snotify.warning('You need to select fields');
                     return;
+                }
+
+                if (this.new_date === null) {
+                    this.new_date = new Date()
+                }
+                if (this.new_time === null) {
+                    this.new_time = '00:00'
                 }
 
                 this.new_date.setHours(parseInt(this.new_time.split(':')[0]));
                 this.new_date.setMinutes(parseInt(this.new_time.split(':')[1]));
 
+                this.$bvModal.hide(header);
                 this.change_item(this.new_date, 'date');
             },
 
