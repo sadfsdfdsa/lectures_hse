@@ -11,6 +11,7 @@
                 <b-tab lazy @click="utils_set_active_board(special_boards.calendar)"
                        :active="active_board===special_boards.calendar">
                     <template v-slot:title>
+                        {{dateToString}}
                         <b-form-datepicker
                                 v-model="calendar_board_date_value"
                                 button-only
@@ -312,6 +313,12 @@
             utils_init_vars() {
                 this.special_boards = this.$store.state.special_boards;
             },
+            add_null(value, limit) {
+                if (value < limit) {
+                    return '0' + value
+                }
+                return value.toString()
+            },
         }
         ,
         created() {
@@ -393,6 +400,17 @@
                 this.special_boards_values.forEach((board) => {
                     if (board.board_name === this.special_boards.everyday) {
                         tmp = board.items;
+                        let today = this.calendar_board_date_value;
+                        tmp.forEach((item) => {
+                                if (item.date !== null) {
+                                    let tmp_date = new Date(item.date);
+                                    tmp_date.setMonth(today.getMonth());
+                                    tmp_date.setFullYear(today.getFullYear());
+                                    tmp_date.setDate(today.getDate());
+                                    item.date = tmp_date;
+                                }
+                            }
+                        );
                         return;
                     }
                 });
@@ -411,14 +429,14 @@
                         }
                     })
                 });
-                let tmp = new Date();
-                if (this.calendar_board_date_value.getFullYear() === tmp.getFullYear() &&
-                    this.calendar_board_date_value.getDate() === tmp.getDate() &&
-                    this.calendar_board_date_value.getMonth() === tmp.getMonth()) {
-                    output = output.concat(this.everydayCardsArray)
-                }
+
+                output = output.concat(this.everydayCardsArray);
                 return output;
-            }
+            },
+            dateToString: function () {
+                let tmp = this.calendar_board_date_value;
+                return this.add_null(tmp.getDate(), 10) + '.' + this.add_null((tmp.getMonth() + 1), 10) + '.' + tmp.getFullYear()
+            },
         }
     }
 </script>

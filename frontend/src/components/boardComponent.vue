@@ -33,14 +33,14 @@
                                 <b-row no-gutters>
                                     <b-col>
                                         <b-form inline>
-                                            <b-form-datepicker
-                                                    v-model="input_extra.deadline_date"
-                                                    button-only
-                                                    locale="en-US"
-                                                    aria-controls="example-input"
-                                                    button-variant reset-button
-                                                    value-as-date :reset-value="null"
-                                                    dropup
+                                            <b-form-datepicker v-if="this.board_name!=='everyday board'"
+                                                               v-model="input_extra.deadline_date"
+                                                               button-only
+                                                               locale="en-US"
+                                                               aria-controls="example-input"
+                                                               button-variant reset-button
+                                                               value-as-date :reset-value="null"
+                                                               dropup
                                             ></b-form-datepicker>
                                             <b-form-timepicker
                                                     dropup

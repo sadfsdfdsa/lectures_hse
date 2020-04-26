@@ -43,10 +43,12 @@
                 <div v-for="link in item.links" class="text-right" v-bind:key="link.name">
                     <b-button-group size="sm">
                         <a class="btn-sm btn-primary"
-                           style="border-top-left-radius: 20px; border-bottom-left-radius: 20px; background-color: #FFA07A" :href="link.value"
+                           style="border-top-left-radius: 20px; border-bottom-left-radius: 20px; background-color: #FFA07A"
+                           :href="link.value"
                            target="_blank">{{link.name}}</a>
-                        <b-button variant="danger"  @click="delete_link(link.value)"
-                                  style="border-top-right-radius: 20px; border-bottom-right-radius: 20px; background-color: #FA8072">×
+                        <b-button variant="danger" @click="delete_link(link.value)"
+                                  style="border-top-right-radius: 20px; border-bottom-right-radius: 20px; background-color: #FA8072">
+                            ×
                         </b-button>
                     </b-button-group>
                 </div>
@@ -71,8 +73,9 @@
                         <em><strong>Deadline passed</strong></em>
                     </b-col>
                 </div>
-                <b-col class="text-right">
-                    <b-button size="sm" pill variant="primary" v-b-modal="item.header" style="background-color: #87CEFA">Edit date
+                <b-col class="text-right" v-if="this.board_name!=='calendar board'">
+                    <b-button size="sm" pill variant="primary" v-b-modal="item.header"
+                              style="background-color: #87CEFA">Edit date
                     </b-button>
                     <b-modal :id="item.header" hide-footer centered :ref="item.header">
                         <template v-slot:modal-title>
@@ -230,7 +233,7 @@
 
         },
         created() {
-            if (this.item.date!==null) {
+            if (this.item.date !== null) {
                 this.new_date = new Date(this.item.date);
                 this.new_time = this.new_date.getHours() + ':' + this.new_date.getMinutes();
             }
