@@ -1,7 +1,8 @@
 <template>
     <div>
-        <Navigation sub_header="Dashboard." link_path="/blog" link_name="Blog."
+        <Navigation sub_header="Dashboard."
         ></Navigation>
+        <!--link_path="/blog" link_name="Blog."-->
         <!--                    notification="Информация об обновлении в блоге" variant="success"
                     show_once="true"-->
         <b-container class="body_for_footer" fluid>
@@ -158,16 +159,12 @@
 
     import Navigation from "../components/Navigation";
     import Footer from "../components/Footer";
-
-    import Empty from "../components/Empty";
-
-    // todo
     import CategoryComponent from "../components/boardComponent";
 
 
     export default {
         name: "dashboardView",
-        components: {Empty, CategoryComponent, Footer, Navigation},
+        components: {CategoryComponent, Footer, Navigation},
         data: () => ({
             boards: [],
 

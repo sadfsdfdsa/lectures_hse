@@ -1,4 +1,6 @@
 from flask import Flask, render_template
+from flask_compress import Compress
+
 from database.database import Database
 from config.config import Config
 
@@ -7,8 +9,10 @@ app = Flask(__name__,
             static_url_path='',
             static_folder='static',
             template_folder='static')
+Compress(app)
 
 app.config.from_object(Config)
+
 
 # Database init
 db = Database("db.db")

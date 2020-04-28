@@ -86,7 +86,6 @@
                                 <b-form-timepicker v-model="new_time"
                                                    reset-button :reset-value="null"
                                                    aria-controls="example-input"
-                                                   reset-button
                                                    value-as-date
                                 ></b-form-timepicker>
                                 <b-form-datepicker v-model="new_date" v-if="this.board_name!=='everyday board'"
@@ -237,9 +236,9 @@
 
             link_exists(value) {
                 // todo
+                value = '';
                 return false
             }
-
         },
         created() {
             if (this.item.date !== null) {

@@ -4,7 +4,7 @@
             <b-col>
                 <b-row>
                     <!--input-->
-                    <b-col sm="6" md="6" lg="3" class="text-left" v-if="!this.disabled">
+                    <b-col sm="6" md="6" lg="4" xl="3" class="text-left" v-if="!this.disabled">
                         <b-card class="shadow shadow-sm mb-4"
                                 :border-variant="card_model.variant"
                                 align="center"
@@ -104,10 +104,10 @@
                             </b-card-text>
                             <template v-slot:header>
                                 <b-row style="max-height: 20px;" aligh-h="end" no-gutters cols="12">
-                                    <b-col class="text-left" cols="5">
-                                        New note form
+                                    <b-col class="text-left" cols="4">
+                                        New note
                                     </b-col>
-                                    <b-col mb="3" v-if="notesTemplates.length>1">
+                                    <b-col v-if="notesTemplates.length>1">
                                         <b-form-select size="sm" class="btn-sm rounded-pill" :options="notesTemplates"
                                                        v-model="active_template">
                                         </b-form-select>
@@ -123,7 +123,7 @@
                     </b-col>
                     <!--/input-->
                     <!--cards-->
-                    <b-col sm="6" md="6" lg="3" class="text-left" v-for="(item, index) in sortedItems"
+                    <b-col sm="6" md="6" lg="4" xl="3" class="text-left" v-for="(item, index) in sortedItems"
                            v-bind:key="index">
                         <card-component :item="item" :active="active_card===item.header"
                                         :board_name="board_name"

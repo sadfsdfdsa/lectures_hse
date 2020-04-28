@@ -1,4 +1,4 @@
-import blogView from "./views/blogView";
+// import blogView from "./views/blogView";
 import dashboardView from "./views/dashboardView";
 
 
@@ -14,12 +14,12 @@ const routes = [
         // name: "indexPage",
         meta: {}
     },
-    {
-        path: "/blog",
-        component: blogView,
-        name: "blogPage",
-        meta: {}
-    },
+    // {
+    //     path: "/blog",
+    //     component: blogView,
+    //     name: "blogPage",
+    //     meta: {}
+    // },
     {
         path: "/dashboard",
         component: dashboardView,
