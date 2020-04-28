@@ -9,7 +9,7 @@
             <b-tabs content-class="mt-3" no-fade>
                 <!--special boards-->
                 <!--calendar-->
-                <b-tab lazy @click="utils_set_active_board(special_boards.calendar)"
+                <b-tab lazy @click="utils_set_active_board(special_boards.calendar)" v-if="show_items"
                        :active="active_board===special_boards.calendar">
                     <template v-slot:title>
                         {{dateToString}}
@@ -35,7 +35,7 @@
                     ></category-component>
                 </b-tab>
                 <!--templates-->
-                <b-tab lazy @click="utils_set_active_board(special_boards.templates)"
+                <b-tab lazy @click="utils_set_active_board(special_boards.templates)" v-if="show_items"
                        :active="active_board===special_boards.templates">
                     <template v-slot:title>
                         <b-row cols="3" cols-sm="3" no-gutters align-v="center">
@@ -57,7 +57,7 @@
                     ></category-component>
                 </b-tab>
                 <!--everyday-->
-                <b-tab lazy @click="utils_set_active_board(special_boards.everyday)"
+                <b-tab lazy @click="utils_set_active_board(special_boards.everyday)" v-if="show_items"
                        :active="active_board===special_boards.everyday">
                     <template v-slot:title>
                         <b-row cols="3" cols-sm="3" no-gutters align-v="center">
@@ -118,6 +118,16 @@
                 <template v-slot:tabs-start>
                     <b-row align-v="center">
                         <b-col>
+                            <b-button @click="set_show_items_flag()" pill variant="primary">
+                                <div v-if="show_items">
+                                    >
+                                </div>
+                                <div v-else>
+                                    <
+                                </div>
+                            </b-button>
+                        </b-col>
+                        <b-col v-if="show_items">
                             <b-button-group size="sm">
                                 <b-button :variant="style_schema==='outline_color'?'outline-primary':'primary'"
                                           @click="set_style(0)"
@@ -173,6 +183,8 @@
             active_card: null,
             calendar_board_date_value: new Date(),
 
+            show_items: true,
+
             special_boards: {
                 calendar: '',
                 templates: '',
@@ -182,6 +194,10 @@
 
         }),
         methods: {
+            set_show_items_flag() {
+                this.show_items = !this.show_items;
+                localStorage[this.$store.state.localstorage_variables.show_items_flag] = JSON.stringify(this.show_items);
+            },
             set_style(index) {
                 this.style_schema = this.$store.state.styles[index];
                 localStorage[this.$store.state.localstorage_variables.style_schema] = this.style_schema;
@@ -350,7 +366,9 @@
                 ])
             }
 
-
+            if (localStorage.getItem(this.$store.state.localstorage_variables.show_items_flag)) {
+                this.show_items = JSON.parse(localStorage.getItem(this.$store.state.localstorage_variables.show_items_flag))
+            }
         }
         ,
         computed: {

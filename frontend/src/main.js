@@ -45,6 +45,7 @@ const store = new Vuex.Store({
             // active_card: 'dashboard_active_card',
             active_board: 'dashboard_active_board',
             style_schema: 'dashboard_style_schema',
+            show_items_flag: 'show_items_flag'
         },
 
         styles: ['full_color', 'outline_color']

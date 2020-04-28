@@ -235,10 +235,14 @@
             },
 
             link_exists(value) {
-                // todo
-                value = '';
-                return false
-            }
+                for (let i = 0; i < this.item.links.length; i++) {
+                    if (this.item.links[i].value === value) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+
         },
         created() {
             if (this.item.date !== null) {
