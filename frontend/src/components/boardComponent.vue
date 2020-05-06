@@ -301,6 +301,9 @@
                         return -1;
                     }
                     if (a.variant === b.variant) {
+                        if (!a.date || !b.date) {
+                            return a.date ? -1 : 1;
+                        }
                         return (new Date(a.date).getTime() - new Date(b.date).getTime()) > 0 ? 1 : -1;
                     }
                     return 1;
