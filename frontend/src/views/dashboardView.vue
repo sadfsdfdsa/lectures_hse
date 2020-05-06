@@ -117,8 +117,8 @@
                 <!--/common boards-->
                 <template v-slot:tabs-start>
                     <b-row align-v="center">
-                        <b-col>
-                            <b-button @click="set_show_items_flag()" pill variant="primary">
+                        <b-col class="mr-1">
+                            <b-button @click="set_show_items_flag()" variant="primary">
                                 <div v-if="show_items">
                                     >
                                 </div>

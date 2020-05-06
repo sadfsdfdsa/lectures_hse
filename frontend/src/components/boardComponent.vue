@@ -197,7 +197,7 @@
 
             // emits to parent
             change_item(index, item) {
-                this.$emit('change_item', this.board_name, this.items.indexOf(item), item)
+                this.$emit('change_item', this.board_name, index, item)
             },
             delete_item(item) {
                 this.$emit('delete_item', this.board_name, this.items.indexOf(item))
@@ -297,8 +297,13 @@
                 let tmp = ['secondary', 'success', 'primary', 'warning', 'danger'];
                 let tmp_list = this.items;
                 tmp_list.sort(function (a, b) {
-                    let result = tmp.indexOf(a.variant) > tmp.indexOf(b.variant);
-                    return result ? -1 : 1;
+                    if (tmp.indexOf(a.variant) > tmp.indexOf(b.variant)) {
+                        return -1;
+                    }
+                    if (a.variant === b.variant) {
+                        return (new Date(a.date).getTime() - new Date(b.date).getTime()) > 0 ? 1 : -1;
+                    }
+                    return 1;
                 });
                 return tmp_list;
             },

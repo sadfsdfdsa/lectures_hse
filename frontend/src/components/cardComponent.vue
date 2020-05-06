@@ -57,25 +57,25 @@
                     :class="(style_schema_string_bg_text_color+'  text-right  mt-2')" no-gutters style="font-size: 80%"
                     align-v="center">
                 <b-col class="text-left" v-if="this.item.date!==null">
-                    <em>{{deadlineDateString}} </em>
+                    <em>{{deadlineDateString}} {{deadlineTimeString}}</em>
                 </b-col>
                 <div v-if="this.item.date!==null">
                     <b-col v-if="deadlineLeft.days>5">
-                        <em>{{deadlineLeft.days}} days left</em>
+                        <em>{{deadlineLeft.days}}d left</em>
                     </b-col>
                     <b-col v-else-if="deadlineLeft.days>=1">
-                        <em><strong>{{deadlineLeft.days}} days {{deadlineLeft.hours}} hours left</strong></em>
+                        <em><strong>{{deadlineLeft.days}}d {{deadlineLeft.hours}}h left &#128293;</strong></em>
                     </b-col>
                     <b-col v-else-if="deadlineLeft.days===0">
-                        <em><strong>{{deadlineLeft.hours}} hours {{deadlineLeft.minutes}} minutes left</strong></em>
+                        <em><strong>{{deadlineLeft.hours}}h {{deadlineLeft.minutes}}m left &#128293;</strong></em>
                     </b-col>
                     <b-col v-else>
-                        <em><strong>Deadline passed</strong></em>
+                        <em><strong>Passed</strong></em>
                     </b-col>
                 </div>
                 <b-col class="text-right" v-if="this.board_name!=='calendar board'">
                     <b-button size="sm" pill variant="primary" v-b-modal="item.header"
-                              style="background-color: #87CEFA">Edit date
+                              style="background-color: #87CEFA">&#9200;
                     </b-button>
                     <b-modal :id="item.header" hide-footer centered :ref="item.header">
                         <template v-slot:modal-title>
@@ -189,7 +189,6 @@
                 if (this.new_time === null) {
                     this.new_time = '00:00'
                 }
-
                 this.new_date.setHours(parseInt(this.new_time.split(':')[0]));
                 this.new_date.setMinutes(parseInt(this.new_time.split(':')[1]));
 
@@ -258,16 +257,19 @@
                     return 'bg-white'
                 }
             },
-
             deadlineLeft: function () {
                 if (this.item.date === null) {
                     return null
                 }
+
                 let tmp = new Date(this.item.date);
+
                 if (tmp === null) {
                     return ''
                 }
+
                 let delta = (tmp.getTime() - new Date().getTime()) / 1000;
+
                 if (delta < 0) {
                     return {days: -1}
                 }
@@ -280,17 +282,17 @@
 
                 let minutes = Math.floor(delta / 60) % 60;
                 delta -= minutes * 60;
-                return {days: days, hours: hours, minutes: minutes};
 
+                return {days: days, hours: hours, minutes: minutes};
             },
             deadlineDateString: function () {
-                if (this.item.date === null) {
-                    return ''
-                }
                 let tmp = new Date(this.item.date);
-
-                return this.add_null(tmp.getDate(), 10) + '.' + this.add_null((tmp.getMonth() + 1), 10) + '.' + tmp.getFullYear() + ' ' + this.add_null(tmp.getHours(), 10) + ':' + this.add_null(tmp.getMinutes(), 10)
+                return this.add_null(tmp.getDate(), 10) + '.' + this.add_null((tmp.getMonth() + 1), 10) + '.' + tmp.getFullYear()
             },
+            deadlineTimeString: function () {
+                let tmp = new Date(this.item.date);
+                return this.add_null(tmp.getHours(), 10) + ':' + this.add_null(tmp.getMinutes(), 10)
+            }
         }
     }
 
