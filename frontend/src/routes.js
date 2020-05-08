@@ -1,5 +1,6 @@
 // import blogView from "./views/blogView";
 import dashboardView from "./views/dashboardView";
+import testView from "./views/testView";
 
 
 require('../src/css/hse.css');
@@ -12,6 +13,12 @@ const routes = [
         name: "dashboardPage",
         // component: indexView,
         // name: "indexPage",
+        meta: {}
+    },
+        {
+        path: "/test",
+        component: testView,
+        name: "testPage",
         meta: {}
     },
     // {

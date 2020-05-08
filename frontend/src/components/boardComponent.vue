@@ -152,9 +152,11 @@
     import CardComponent from "./cardComponent";
     import Empty from "./Empty";
 
+    import draggable from 'vuedraggable'
+
     export default {
         name: "categoryComponent",
-        components: {Empty, CardComponent},
+        components: {Empty, CardComponent, draggable},
         props: ['board_name', 'items', 'active_card', 'style_schema', 'disabled', 'templates'],
         data: () => ({
             card_model: {

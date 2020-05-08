@@ -278,7 +278,7 @@
                 this.new_date = new Date(this.item.date);
                 this.new_time = this.new_date.getHours() + ':' + this.new_date.getMinutes();
                 this.deadline_left = this.deadlineLeftObject();
-                setInterval(() => this.deadline_left = this.deadlineLeftObject(), 60*1000);
+                setInterval(() => this.deadline_left = this.deadlineLeftObject(), 60 * 1000);
             }
         },
         computed: {

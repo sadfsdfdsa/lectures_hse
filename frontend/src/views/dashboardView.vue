@@ -79,7 +79,6 @@
                     ></category-component>
                 </b-tab>
                 <!--/special boards-->
-
                 <!--common boards-->
                 <div v-for="item in sortedBoardsArray" v-bind:key="item.board_name">
                     <b-tab lazy @click="utils_set_active_board(item.board_name)"
@@ -92,7 +91,8 @@
                                         style="border: none; box-shadow: none; color: transparent; text-shadow: 0 0 0 black;">
                                 </b-form-input>
                                 <template v-slot:prepend>
-                                    <div class="mr-1 btn-primary btn rounded-pill disabled">{{item.items.length}}</div>
+                                    <div class="mr-1 btn-primary btn rounded-pill disabled">{{item.items.length}}
+                                    </div>
                                 </template>
                                 <b-input-group-append class="ml-1">
                                     <b-button pill variant="outline-danger" class="ml-1"
@@ -171,10 +171,12 @@
     import Footer from "../components/Footer";
     import CategoryComponent from "../components/boardComponent";
 
+    import draggable from 'vuedraggable'
+
 
     export default {
         name: "dashboardView",
-        components: {CategoryComponent, Footer, Navigation},
+        components: {CategoryComponent, Footer, Navigation, draggable},
         data: () => ({
             boards: [],
 
@@ -332,6 +334,10 @@
                 }
                 return value.toString()
             },
+
+            test(evt) {
+                console.log('asd')
+            }
         }
         ,
         created() {
