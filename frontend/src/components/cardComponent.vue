@@ -59,15 +59,15 @@
                 <b-col class="text-left" v-if="this.item.date!==null">
                     <em>{{deadlineDateString}} {{deadlineTimeString}}</em>
                 </b-col>
-                <div v-if="this.item.date!==null">
-                    <b-col v-if="deadlineLeft.days>5">
-                        <em>{{deadlineLeft.days}}d left</em>
+                <div v-if="this.item.date!==null" ref="time_deadline">
+                    <b-col v-if="deadline_left.days>5">
+                        <em>{{deadline_left.days}}d left</em>
                     </b-col>
-                    <b-col v-else-if="deadlineLeft.days>=1">
-                        <em><strong>{{deadlineLeft.days}}d {{deadlineLeft.hours}}h left &#128293;</strong></em>
+                    <b-col v-else-if="deadline_left.days>=1">
+                        <em><strong>{{deadline_left.days}}d {{deadline_left.hours}}h left &#128293;</strong></em>
                     </b-col>
-                    <b-col v-else-if="deadlineLeft.days===0">
-                        <em><strong>{{deadlineLeft.hours}}h {{deadlineLeft.minutes}}m left &#128293;</strong></em>
+                    <b-col v-else-if="deadline_left.days===0">
+                        <em><strong>{{deadline_left.hours}}h {{deadline_left.minutes}}m left &#128293;</strong></em>
                     </b-col>
                     <b-col v-else>
                         <em><strong>Passed</strong></em>
@@ -157,7 +157,8 @@
         props: ['item', 'active', 'style_schema', 'disabled', 'index', 'board_name'],
         data: () => ({
             new_date: null,
-            new_time: null
+            new_time: null,
+            deadline_left: null
         }),
         methods: {
             delete_item() {
@@ -194,6 +195,7 @@
 
                 this.$bvModal.hide(header);
                 this.change_item(this.new_date, 'date');
+                this.deadline_left = this.deadlineLeftObject()
             },
 
             add_link(name, value) {
@@ -241,23 +243,7 @@
                 }
                 return false;
             },
-
-        },
-        created() {
-            if (this.item.date !== null) {
-                this.new_date = new Date(this.item.date);
-                this.new_time = this.new_date.getHours() + ':' + this.new_date.getMinutes();
-            }
-        },
-        computed: {
-            style_schema_string_bg_text_color() {
-                if (this.style_schema === this.$store.state.styles[0]) {
-                    return 'bg-' + this.item.variant + (this.item.variant === 'warning' || this.item.variant === 'success' ? ' text-black' : ' text-white')
-                } else {
-                    return 'bg-white'
-                }
-            },
-            deadlineLeft: function () {
+            deadlineLeftObject() {
                 if (this.item.date === null) {
                     return null
                 }
@@ -284,6 +270,24 @@
                 delta -= minutes * 60;
 
                 return {days: days, hours: hours, minutes: minutes};
+            },
+
+        },
+        created() {
+            if (this.item.date !== null) {
+                this.new_date = new Date(this.item.date);
+                this.new_time = this.new_date.getHours() + ':' + this.new_date.getMinutes();
+                this.deadline_left = this.deadlineLeftObject();
+                setInterval(() => this.deadline_left = this.deadlineLeftObject(), 6000);
+            }
+        },
+        computed: {
+            style_schema_string_bg_text_color() {
+                if (this.style_schema === this.$store.state.styles[0]) {
+                    return 'bg-' + this.item.variant + (this.item.variant === 'warning' || this.item.variant === 'success' ? ' text-black' : ' text-white')
+                } else {
+                    return 'bg-white'
+                }
             },
             deadlineDateString: function () {
                 let tmp = new Date(this.item.date);
