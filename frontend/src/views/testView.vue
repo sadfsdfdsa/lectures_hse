@@ -10,7 +10,7 @@
                             <b-col cols="9" class="text-left"><h5>{{column.name}}</h5></b-col>
                             <b-col cols="3" class="text-right" align-self="center">
                                         <span class="btn-md text-right btn rounded-pill"
-                                              @click="function(){this.rewrite_column_name=column.name; this.new_column_name=column.name}">&#9998;</span>
+                                              @click="set_rewrite_name(column.name)">&#9998;</span>
                             </b-col>
                         </b-row>
                         <b-row v-else no-gutters>
@@ -20,8 +20,10 @@
                                 </h3>
                             </b-col>
                             <b-col cols="2" class="text-right" align-self="center">
-                                        <span class="btn-sm text-right btn rounded-pill"
-                                              @click="change_column_name(column.name)">&#10004;</span>
+                                       <span class="btn-sm text-right btn rounded-pill"
+                                             @click="change_column_name(column.name)">&#10004;</span>
+                                <span class="btn-sm text-right btn rounded-pill btn-outline-danger"
+                                      @click="delete_column(column.name)">&#128711;</span>
                             </b-col>
                         </b-row>
                     </div>
@@ -34,8 +36,12 @@
                             <b-row>
                                 <b-col class="text-left" sm="9">{{item.body}}</b-col>
                                 <b-col class="text-right" sm="3">
-                                    <b-button pill size="sm" class="bg-transparent border-0 text-black-50">
-                                        &#8801;
+                                    <!--<b-button pill size="sm" class="bg-transparent border-0 text-black-50">-->
+                                    <!--&#8801;-->
+                                    <!--</b-button>-->
+                                    <b-button pill size="sm" class="bg-transparent border-0 text-black-50"
+                                              @click="delete_task(index, column.name)">
+                                        &#215;
                                     </b-button>
                                 </b-col>
                             </b-row>
@@ -110,31 +116,7 @@
             rewrite_column_name: '',
             new_column_name: '',
 
-            columns: [
-                {
-                    name: 'Нужно сделать',
-                    variant: 'danger',
-                    items: [
-                        {body: 'Тестовая задача', variant: 'success'},
-                        {body: 'sakf', variant: 'secondary'},
-                    ]
-                },
-                {
-                    name: 'В работе',
-                    variant: 'warning',
-                    items: [
-                        {body: 'bktds', variant: 'primary'},
-                        {body: 'btka', variant: 'danger'},
-                    ]
-                },
-                {
-                    name: 'Сделано',
-                    variant: 'success',
-                    items: [
-                        {body: 'bktkbt', variant: 'warning'},
-                    ]
-                },
-            ]
+            columns: []
         }),
         methods: {
             add_column() {
@@ -143,6 +125,19 @@
                     items: []
                 });
                 this.save_state()
+            },
+            delete_column(col_name) {
+                for (let i = 0; i < this.columns.length; i++) {
+                    if (col_name === this.columns[i].name) {
+                        this.$delete(this.columns, i);
+                        this.save_state();
+                        return;
+                    }
+                }
+            },
+            set_rewrite_name(col_name) {
+                this.rewrite_column_name = col_name;
+                this.new_column_name = col_name
             },
             change_column_name(old_name) {
                 for (let i = 0; i < this.columns.length; i++) {
@@ -174,6 +169,15 @@
                     }
                 }
 
+            },
+            delete_task(task_index, column_name) {
+                for (let i = 0; i < this.columns.length; i++) {
+                    if (column_name === this.columns[i].name) {
+                        this.$delete(this.columns[i].items, task_index);
+                        this.save_state();
+                        return;
+                    }
+                }
             },
             save_state() {
                 localStorage[this.$store.state.localstorage_variables.columns] = JSON.stringify(this.columns)
