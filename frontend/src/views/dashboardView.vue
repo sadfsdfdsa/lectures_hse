@@ -1,8 +1,8 @@
 <template>
     <div>
         <Navigation sub_header="Dashboard."
+                    link_path="/tasks" link_name="Tasks."
         ></Navigation>
-        <!--link_path="/blog" link_name="Blog."-->
         <!--                    notification="Информация об обновлении в блоге" variant="success"
                     show_once="true"-->
         <b-container class="body_for_footer" fluid>
@@ -120,10 +120,10 @@
                         <b-col class="mr-1">
                             <b-button @click="set_show_items_flag()" variant="primary">
                                 <div v-if="show_items">
-                                    >
+                                    -
                                 </div>
                                 <div v-else>
-                                    <
+                                    +
                                 </div>
                             </b-button>
                         </b-col>
@@ -171,12 +171,12 @@
     import Footer from "../components/Footer";
     import CategoryComponent from "../components/boardComponent";
 
-    import draggable from 'vuedraggable'
+    // import draggable from 'vuedraggable'
 
 
     export default {
         name: "dashboardView",
-        components: {CategoryComponent, Footer, Navigation, draggable},
+        components: {CategoryComponent, Footer, Navigation},
         data: () => ({
             boards: [],
 
@@ -335,9 +335,8 @@
                 return value.toString()
             },
 
-            test(evt) {
-                console.log('asd')
-            }
+
+
         }
         ,
         created() {

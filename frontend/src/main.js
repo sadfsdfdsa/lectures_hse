@@ -38,6 +38,7 @@ const store = new Vuex.Store({
         },
 
         localstorage_variables: {
+            // DASHBOARD SERVICE
             special_boards: 'dashboard_special_boards',
             // todo nots_app in production
             // boards: 'dashboard_boards', // board model: {name: string, items: []}
@@ -45,7 +46,10 @@ const store = new Vuex.Store({
             // active_card: 'dashboard_active_card',
             active_board: 'dashboard_active_board',
             style_schema: 'dashboard_style_schema',
-            show_items_flag: 'show_items_flag'
+            show_items_flag: 'show_items_flag',
+
+            // TASKS QUEUE SERVICE
+            columns: 'tasks_columns'
         },
 
         styles: ['full_color', 'outline_color']

@@ -16,7 +16,7 @@ const routes = [
         meta: {}
     },
         {
-        path: "/test",
+        path: "/tasks",
         component: testView,
         name: "testPage",
         meta: {}
