@@ -1,12 +1,17 @@
 <template>
     <div>
-        <router-view></router-view>
+        <NavBar></NavBar>
+        <router-view class="margin-nav"></router-view>
         <vue-snotify></vue-snotify>
     </div>
 </template>
 
 <script>
-    export default {}
+    import NavBar from "./components/Navigation";
+
+    export default {
+        components: {NavBar}
+    }
 </script>
 
 <style lang="scss">

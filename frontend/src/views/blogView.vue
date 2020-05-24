@@ -1,6 +1,5 @@
 <template>
     <div>
-        <Navigation sub_header="Blog." link_path="/dashboard" link_name="Dashboard."></Navigation>
         <b-container class="body_for_footer">
             <b-row class="mt-5" v-if="posts.length===0">
                 <b-col>

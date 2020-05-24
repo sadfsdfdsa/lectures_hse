@@ -1,6 +1,5 @@
 <template>
     <div>
-        <Navigation sub_header="Tasks" link_path="/" link_name="Dashboard."></Navigation>
         <div class="container-fluid">
             <draggable class="row" @change="save_state" :list="columns">
                 <div class="col-12 col-sm-4 col-md-3 col-lg-2" v-for="(column, index) in columns" :key="column.name">

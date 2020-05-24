@@ -1,8 +1,6 @@
 <template>
     <div>
-        <Navigation sub_header="Dashboard."
-                    link_path="/tasks" link_name="Tasks."
-        ></Navigation>
+
         <!--                    notification="Информация об обновлении в блоге" variant="success"
                     show_once="true"-->
         <b-container class="body_for_footer" fluid>

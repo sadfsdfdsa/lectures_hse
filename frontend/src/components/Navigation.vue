@@ -1,49 +1,52 @@
 <template>
-    <div class="hse_nav_background hse_nav_font_color container-fluid mb-3">
-        <b-row align-v="center" no-gutters>
-            <b-col class="hse_nav_header_main" sm="5">
-                <h1 style="display: inline-block">
-                    <router-link to="/">
-                        <span class="align-middle" style="color: white">On|{{sub_header}}</span>
-                    </router-link>
-                </h1>
-                <span class="badge badge-warning mt-1" style="vertical-align: top">Beta</span>
-            </b-col>
-            <b-col class="text-right">
-                <router-link :to="link_path" class="hse_a"><h3>→{{link_name}}</h3></router-link>
+    <b-container class="fixed-top" fluid="true" style="background-color: rgba(255, 255, 255, .7);">
+        <b-row align-h="center">
+            <b-col sm="12" lg="8">
+                <b-navbar toggleable="lg">
+                    <b-row class="navbar-row" align-v="center">
+                        <b-col class="text-left" lg="6" md="10">
+                            <b-row align-v="center">
+                                <b-col class="text-left" lg="12" cols="10">
+                                    <div style="display: inline-block">
+                                        <router-link to="/" tag="div" class="cursor h-font text-uppercase">
+                                            <span class="brand-animation-pink">On</span>|<span
+                                                class="brand-animation-blue">Testing</span></router-link>
+                                    </div>
+                                    <!--                                        <span class="badge badge-warning" style="vertical-align: top">Beta</span>-->
+                                </b-col>
+                                <b-col class="text-right" cols="2">
+                                    <b-navbar-toggle target="nav-text-collapse"
+                                                     class="d-lg-none text-right border-0 bg-white">
+                                        <img src="../assets/Hamburger_icon.svg">
+                                    </b-navbar-toggle>
+                                </b-col>
+                            </b-row>
+                        </b-col>
+                        <b-col class="text-uppercase" lg="4">
+                            <b-collapse id="nav-text-collapse" is-nav>
+                                <div class="mr-4">
+                                    <router-link to="/" tag="div" class="navbar-item">Dashboard</router-link>
+                                </div>
+                                <div class="mr-4">
+
+                                    <router-link to="/tasks" tag="div" class="navbar-item">Tasks</router-link>
+
+                                </div>
+                                <div class="mr-4">
+                                    <a href="https://test-design-container.herokuapp.com/"><span
+                                            class="navbar-item">Blog</span></a></div>
+                            </b-collapse>
+                        </b-col>
+                    </b-row>
+                </b-navbar>
             </b-col>
         </b-row>
-        <b-row v-if="notf" :class="'text-center alert-'+variant" @click="checked">
-            <b-col><h4>{{notf}}</h4>(нажмите чтобы убрать)</b-col>
-        </b-row>
-    </div>
+    </b-container>
 </template>
 
 <script>
     export default {
-        name: "Navigation",
-        props: ['sub_header', 'link_name', 'link_path', 'notification', 'variant', 'show_once'],
-        data: () => ({
-            notf: null
-        }),
-        methods: {
-            checked() {
-                this.notf = null;
-                if (this.show_once) {
-                    localStorage.note_app_show_once = 'true';
-                }
-            },
-        },
-        created() {
-            document.title = 'On | ' + this.sub_header;
-
-            if (localStorage.getItem('note_app_show_once') && !this.show_once) {
-                localStorage.removeItem('note_app_show_once')
-            }
-            if (!localStorage.getItem('note_app_show_once' || this.show_once)) {
-                this.notf = this.notification;
-            }
-        }
+        name: "NavBar",
     }
 </script>
 

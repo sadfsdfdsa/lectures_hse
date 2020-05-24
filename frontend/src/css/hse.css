@@ -1,3 +1,226 @@
+a:link {
+    text-decoration: none !important;
+}
+
+.bottom_shadow {
+    -webkit-box-shadow: 0 8px 6px -6px #ccc;
+    -moz-box-shadow: 0 8px 6px -6px #ccc;
+    box-shadow: 0 8px 6px -6px #ccc;
+}
+
+.margin-nav {
+    margin-top: 75px;
+}
+
+.active_bottom_shadow:hover {
+    -webkit-box-shadow: 0 12px 12px -6px #ccc !important;
+    -moz-box-shadow: 0 12px 12px -6px #ccc !important;
+    box-shadow: 0 12px 12px -6px #ccc !important;
+}
+
+
+.bg-blue {
+    background: rgb(3, 69, 138);
+    background: linear-gradient(90deg, rgba(3, 69, 138, 1) 0%, rgba(9, 126, 233, 1) 100%);
+    color: white;
+}
+
+.bg-black {
+    color: white;
+    background-color: black !important;
+}
+
+.bg-blue:hover {
+    background: rgb(0, 0, 139);
+    background: linear-gradient(156deg, rgba(0, 0, 139, 1) 0%, rgba(0, 0, 255, 1) 100%);
+    color: white;
+}
+
+.bg-pink {
+    background: rgb(160, 5, 242);
+    background: linear-gradient(156deg, rgba(160, 5, 242, 1) 2%, rgba(160, 13, 164, 1) 75%);
+    color: white;
+}
+
+.bg-pink:hover {
+    background: rgb(81, 0, 124);
+    background: linear-gradient(156deg, rgba(81, 0, 124, 1) 2%, rgba(160, 13, 164, 1) 75%);
+    color: white;
+}
+
+.brand-animation-pink:hover {
+    color: rebeccapurple;
+}
+
+.brand-animation-blue {
+    color: darkblue;
+}
+
+.brand-animation-blue:hover {
+    color: dodgerblue;
+}
+
+.border-radius {
+    border-radius: 25px;
+}
+
+.border-radius-left {
+    border-bottom-left-radius: 25px;
+    border-top-left-radius: 25px;
+}
+
+.border-radius-right {
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
+}
+
+.border-radius-none {
+    border-radius: 0;
+}
+
+.color-blue-font {
+    color: darkblue;
+}
+
+.color-pink-font {
+    color: rebeccapurple;
+}
+
+.color-gray-font {
+    color: darkgrey;
+}
+
+.font-size-14 {
+    font-size: 1.4em;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.cursor-0 {
+    cursor: default;
+}
+
+.navbar-row {
+    min-height: 60px;
+}
+
+.navbar-item {
+    color: black;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: none;
+    font-size: 1.1em;
+}
+
+.navbar-item-font {
+    color: black;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1em;
+}
+
+.h-font {
+    font-family: 'Consolas', 'Monaco', 'Bitstream Vera Sans Mono', monospace;
+    font-weight: 700;
+    font-size: 1.5em;
+    letter-spacing: 3px;
+}
+
+.navbar-brand:hover {
+    color: #cccccc;
+}
+
+.navbar-item:hover {
+    cursor: pointer;
+    box-shadow: 0px 2px 0px 0px black !important;
+}
+
+.btn-black {
+    color: black;
+    border: 1px solid black;
+    background-color: transparent;
+}
+
+.btn-black:hover {
+    background-color: black !important;
+    color: white;
+}
+
+.btn-black-invert {
+    color: white;
+    border: 1px solid white;
+    background-color: black !important;
+}
+
+.btn-black-invert:hover {
+    background-color: transparent;
+    color: black;
+    border: 1px solid black;
+}
+
+.btn-black:focus {
+    box-shadow: none !important;
+}
+
+.btn-black-invert:focus {
+    box-shadow: none !important;
+}
+
+.bg-yellow {
+    background-color: #ffdf7e;
+}
+
+.banner-section {
+    background-image: url(https://static.pexels.com/photos/373912/pexels-photo-373912.jpeg);
+    background-size: cover;
+    height: 380px;
+    left: 0;
+    top: 0;
+    background-position: 0;
+}
+
+.banner-section-1 {
+    background-image: url(https://images.dailyhive.com/20200108125811/shutterstock_1531447955.jpg);
+    background-size: cover;
+    height: 380px;
+    left: 0;
+    top: 0;
+    background-position: 0;
+}
+
+.banner-section-2 {
+    background-image: url(https://images8.alphacoders.com/879/879694.jpg);
+    background-size: cover;
+    height: 380px;
+    left: 0;
+    top: 0;
+    background-position: 0;
+}
+
+.input-underline {
+    box-shadow: 0px 2px 0px 0px #aaaaaa !important;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+.input-underline:focus {
+    background-color: transparent;
+    outline: none !important;
+    border: none !important;
+    box-shadow: 0px 2px 0px 0px black !important;
+    border-radius: 0;
+}
+
+.input-underline:focus::placeholder {
+    color: black !important;
+}
+
+
+.left-hover-border:hover {
+    border-left: 3px solid !important;
+}
+
+
 .hse_font_color {
     color: cornflowerblue;
 }
