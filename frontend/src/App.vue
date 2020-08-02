@@ -1,16 +1,16 @@
 <template>
     <div>
-        <NavBar></NavBar>
+<!--        <NavBar></NavBar>-->
         <router-view class="margin-nav"></router-view>
         <vue-snotify></vue-snotify>
     </div>
 </template>
 
 <script>
-    import NavBar from "./components/Navigation";
+    // import NavBar from "./components/Navigation";
 
     export default {
-        components: {NavBar}
+        // components: {NavBar}
     }
 </script>
 
