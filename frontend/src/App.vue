@@ -1,7 +1,8 @@
 <template>
     <div>
-<!--        <NavBar></NavBar>-->
-        <router-view class="margin-nav"></router-view>
+        <!--        <NavBar></NavBar>-->
+        <!--        <router-view class="margin-nav"></router-view>-->
+        <router-view></router-view>
         <vue-snotify></vue-snotify>
     </div>
 </template>
