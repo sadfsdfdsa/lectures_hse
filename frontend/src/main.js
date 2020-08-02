@@ -10,6 +10,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import routes from "./routes.js";
 import App from "./App.vue";
 import api from "./utils/api.js";
+import './registerServiceWorker'
 
 Vue.use(BootstrapVue);
 Vue.use(VueRouter);
